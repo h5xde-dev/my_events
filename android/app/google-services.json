@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1067165943048",
+    "firebase_url": "https://myevents-4fb18.firebaseio.com",
+    "project_id": "myevents-4fb18",
+    "storage_bucket": "myevents-4fb18.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1067165943048:android:a81056ffaef2ce341018bd",
+        "android_client_info": {
+          "package_name": "com.templarapps.myevents"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1067165943048-7e4pk37i0j7qhmbq8ohjitk0pq6e2ts9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDBq97tTtXeE8w14XlJqhZ9ZyRwE10D2E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1067165943048-7e4pk37i0j7qhmbq8ohjitk0pq6e2ts9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
