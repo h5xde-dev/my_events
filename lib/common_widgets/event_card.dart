@@ -1,80 +1,118 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+import 'dart:ui';
 
 class EventCard extends StatelessWidget {
+  EventCard({
+    this.currentPage,
+    this.data,
+  });
+
+  final double currentPage;
+  final List data;
+  final double padding = 20.0;
+  final double verticalInset = 20.0;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      margin: EdgeInsets.only(bottom: 5, top: 10),
-      height: 130,
-      width: 200,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            /*1*/
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                 /*2*/
-                Container(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    'Дегустация Chabaco',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
+    
+    var cardAspectRatio = 12.0 / 16.0;
+    var widgetAspectRatio = cardAspectRatio * 1.2;
+
+    return new AspectRatio(
+      aspectRatio: widgetAspectRatio,
+      child: LayoutBuilder(builder: (context, contraints) {
+        var width = contraints.maxWidth;
+        var height = contraints.maxHeight;
+
+        var safeWidth = width - 2 * padding;
+        var safeHeight = height - 2 * padding;
+
+        var heightOfPrimaryCard = safeHeight;
+        var widthOfPrimaryCard = heightOfPrimaryCard * cardAspectRatio;
+
+        var primaryCardLeft = safeWidth - widthOfPrimaryCard;
+        var horizontalInset = primaryCardLeft / 2;
+
+        List<Widget> cardList = new List();
+
+        for (var i = 0; i < data.length; i++) {
+          var delta = i - currentPage;
+          bool isOnRight = delta > 0;
+
+          var start = padding +
+              max(
+                  primaryCardLeft -
+                      horizontalInset * -delta * (isOnRight ? 15 : 1),
+                  0.0);
+
+          var cardItem = Positioned.directional(
+            top: padding + verticalInset * max(-delta, 0.0),
+            bottom: padding + verticalInset * max(-delta, 0.0),
+            start: start,
+            textDirection: TextDirection.rtl,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Container(
+                decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                  BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(3.0, 6.0),
+                      blurRadius: 10.0)
+                ]),
+                child: AspectRatio(
+                  aspectRatio: cardAspectRatio,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: <Widget>[
+                      Image.asset(data[i]['image']??'images/image_01.png', fit: BoxFit.cover),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Text(data[i]['title']??'test',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 25.0,
+                                      fontFamily: "SF-Pro-Text-Regular")),
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 12.0, bottom: 12.0),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 22.0, vertical: 6.0),
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).secondaryHeaderColor,
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                child: Text("Возможно пойду",
+                                  style: TextStyle(color: Colors.white)
+                                )
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                Text(
-                  'Магнитогорск, Ленина 228',
-                  style: TextStyle(
-                    color: Colors.grey[500],
-                  ),
-                ),
-                SizedBox(height: 15),
-                Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.person
-                    ),
-                    Text(
-                      ' HookahService',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(width: 15),
-                    Icon(
-                      Icons.people
-                    ),
-                    Text(
-                      ' 41',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
-          ),
-          /*3*/
-          IconButton(
-            icon: Icon(Icons.gps_not_fixed),
-            color: Colors.deepPurple,
-            onPressed: () {},
-          ),
-        ],
-      ),
+          );
+          cardList.add(cardItem);
+        }
+        return Stack(
+          children: cardList,
+        );
+      }),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:location/location.dart';
+import 'package:my_events/common_widgets/navigation_menu.dart';
 
 const double CAMERA_ZOOM = 16;
 const double CAMERA_TILT = 80;
@@ -91,40 +92,9 @@ class _MapPageState extends State<MapPage> {
          bearing: CAMERA_BEARING
       );
     }
-
-    print("MY LOCATION:$currentLocation");
     
     return Scaffold(
-      appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50.0),
-          child: AppBar(
-            title: Directionality(
-                textDirection: Directionality.of(context),
-                child: Container(
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.white,
-                  ),
-                  child: TextField(
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0
-                    ),
-                    decoration: InputDecoration(
-                        hintStyle: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16.0
-                        ),
-                        border: null
-                    ),
-                  ),
-                )
-            ),
-          ),
-        ),
-      body: __buildContent(context, initialCameraPosition),
+        body: __buildContent(context, initialCameraPosition),
       );
   }
 
