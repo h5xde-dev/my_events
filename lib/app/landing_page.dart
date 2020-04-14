@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:my_events/app/sign_in/sign_in_page.dart';
-import 'package:my_events/app/home_page.dart';
 import 'package:my_events/services/auth.dart';
+import 'package:my_events/common_widgets/navigation_menu.dart';
+
 import 'dart:async';
 
 class LandingPage extends StatefulWidget {
   LandingPage({
-    @required this.auth
+    @required this.auth,
   });
 
   final AuthBase auth;
@@ -52,15 +53,14 @@ class _LandingPageState extends State<LandingPage> {
             onSignIn: _updateUser,
           );
           }
-          return HomePage(
-            auth: widget.auth,
-            onSignOut: () => _updateUser(null),
+          return Scaffold(
+            body: NavigationMenu(auth: Auth()),
           );
         }
         return SignInPage(
-            auth: widget.auth,
-            onSignIn: _updateUser,
-          );
+          auth: widget.auth,
+          onSignIn: _updateUser,
+        );
       },
     );
   }

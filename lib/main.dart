@@ -1,31 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:my_events/app/landing_page.dart';
 import 'package:my_events/services/auth.dart';
-import 'package:my_events/app/map_page.dart';
+import 'package:my_events/services/customisation.dart';
 
 void main() {
   runApp(MyApp());
 }
-
+Future <ThemeData> getUserTheme() async{
+  return await Customisation.getTheme();
+}
 class MyApp extends StatelessWidget
 {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      color: Colors.white,
-      
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/map': (context) => MapPage(auth: Auth()),
+    return FutureBuilder(
+      future: getUserTheme(),
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Center(
+                child:CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                  strokeWidth: 2.0,
+                )
+              );
+          case ConnectionState.waiting:
+            return Center(
+                child:CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                  strokeWidth: 2.0,
+                )
+              );
+          default:
+            if (snapshot.hasError)
+              return CircularProgressIndicator();
+            else {
+              return MaterialApp(
+                color: Colors.black,
+                
+                debugShowCheckedModeBanner: false,
+                title: 'MyEvents',
+                theme: snapshot.data,
+                home: LandingPage(auth:Auth())
+              );
+            }
+        }
       },
-      title: 'MyEvents',
-      theme:ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
-      home: LandingPage(
-        auth: Auth(),
-      ),
     );
   }
 }
