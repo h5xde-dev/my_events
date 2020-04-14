@@ -66,41 +66,85 @@ class EventCard extends StatelessWidget {
                     fit: StackFit.expand,
                     children: <Widget>[
                       Image.asset(data[i]['image']??'images/image_01.png', fit: BoxFit.cover),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 8.0),
-                              child: Text(data[i]['title']??'test',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25.0,
-                                      fontFamily: "SF-Pro-Text-Regular")),
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 12.0, bottom: 12.0),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 22.0, vertical: 6.0),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).secondaryHeaderColor,
-                                    borderRadius: BorderRadius.circular(20.0)),
-                                child: Text("Возможно пойду",
-                                  style: TextStyle(color: Colors.white)
-                                )
+                      Container(
+                        height: 10,
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 16.0, top: 8.0, bottom: 8.0),
+                                    child: CircleAvatar(
+                                      backgroundColor: Theme.of(context).primaryColor,
+                                      radius: 20,
+                                      child: CircleAvatar(
+                                        backgroundColor: Theme.of(context).backgroundColor,
+                                        //backgroundImage: AssetImage(data[i]['avatar']??'images/image_01.png'),
+                                        radius: 18,
+                                      ),
+                                    )
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 8.0, right: 16.0, top: 8.0),
+                                    child: Container(
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Theme.of(context).primaryColor),
+                                        color: Theme.of(context).backgroundColor,
+                                        borderRadius: BorderRadius.circular(5.0)
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 6.0),
+                                        child: Text(data[i]['description']??'test',
+                                          style: TextStyle(
+                                              color: Theme.of(context).textSelectionColor,
+                                              fontSize: 15.0,
+                                              fontFamily: "SF-Pro-Text-Regular")),
+                                      )
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16.0, vertical: 8.0),
+                                child: Text(data[i]['description']??'test',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15.0,
+                                        fontFamily: "SF-Pro-Text-Regular")),
+                              ),
+                            ],
+                          )
                         ),
-                      )
+                      ),
+                      Positioned(
+                        height: 150,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: ClipRect(  // <-- clips to the 200x200 [Container] below
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 10.0,
+                              sigmaY: 10.0,
+                            ),
+                            child: Container(
+                              color: Theme.of(context).textSelectionColor.withOpacity(0.4),
+                              alignment: Alignment.center,
+                              width: 100.0,
+                              height: 150.0,
+                              child: _cardInfo(context, i),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -113,6 +157,53 @@ class EventCard extends StatelessWidget {
           children: cardList,
         );
       }),
+    );
+  }
+
+  Widget _cardInfo(context, i){
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: 16.0, vertical: 8.0),
+            child: Text(data[i]['title']??'test',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25.0,
+                    fontFamily: "SF-Pro-Text-Regular")),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: 16.0, vertical: 8.0),
+            child: Text(data[i]['description']??'test',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15.0,
+                    fontFamily: "SF-Pro-Text-Regular")),
+          ),
+          SizedBox(
+            height: 10.0,
+          ),                 
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 12.0, bottom: 12.0),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: 22.0, vertical: 6.0),
+              decoration: BoxDecoration(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  borderRadius: BorderRadius.circular(20.0)),
+              child: Text("Возможно пойду",
+                style: TextStyle(color: Colors.white)
+              )
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

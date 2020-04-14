@@ -14,10 +14,6 @@ class MainPage extends StatefulWidget {
 
 List data = [
     {
-      'title': 'Дегустация табака',
-      'image': 'images/image_01.png',
-    },
-    {
       'title': 'День города',
       'image': 'images/image_02.jpg',
     },
@@ -28,7 +24,11 @@ List data = [
     {
       'title': 'Кофе вечер',
       'image': 'images/image_04.jpg',
-    }
+    },
+    {
+      'title': 'Дегустация табака',
+      'image': 'images/image_01.png',
+    },
 ];
 
 class _MainPageState extends State<MainPage> {

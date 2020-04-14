@@ -23,12 +23,12 @@ class _NavigationMenuState extends State<NavigationMenu> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> _widgetOptions = <Widget>[
     MainPage(auth: Auth()),
-    MapPage(auth: Auth()),
-    SettingsPage(auth: Auth()),
     Text(
       'Index 3: Profile',
       style: optionStyle,
     ),
+    MapPage(auth: Auth()),
+    SettingsPage(auth: Auth()),
   ];
 
   @override
@@ -38,35 +38,35 @@ class _NavigationMenuState extends State<NavigationMenu> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(color: Colors.white, boxShadow: [
-          BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.1))
+        decoration: BoxDecoration(color: Theme.of(context).backgroundColor, boxShadow: [
+          BoxShadow(blurRadius: 20, color: Theme.of(context).primaryColor.withOpacity(.1))
         ]),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
             child: GNav(
                 gap: 8,
-                activeColor: Colors.white,
+                activeColor: Theme.of(context).backgroundColor,
                 iconSize: 24,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 duration: Duration(milliseconds: 800),
-                tabBackgroundColor: Colors.grey[800],
+                tabBackgroundColor: Theme.of(context).textSelectionColor,
                 tabs: [
                   GButton(
                     icon: Icons.home,
-                    text: 'Home',
+                    text: 'Главная',
                   ),
                   GButton(
                     icon: Icons.favorite,
-                    text: 'Likes',
+                    text: 'Избранное',
                   ),
                   GButton(
-                    icon: Icons.search,
-                    text: 'Search',
+                    icon: Icons.map,
+                    text: 'Карта',
                   ),
                   GButton(
                     icon: Icons.settings,
-                    text: 'Profile',
+                    text: 'Настройки',
                   ),
                 ],
                 selectedIndex: _selectedIndex,

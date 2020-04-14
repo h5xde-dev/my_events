@@ -1,23 +1,38 @@
 import 'package:flutter/material.dart';
 
 class Themes {
-
-  List<Map> data = [
-    {
-      'name': 'purple',
-      'background': Colors.white,
-      'font' : Colors.black,
-      'gradientStart': Colors.purple[200],
-      'gradientEnd': Colors.purple,
-      'waveColor': Colors.deepPurple.withAlpha(60),
-    },
-    {
-      'name': 'pink',
-      'background': Colors.white,
-      'font' : Colors.black,
-      'gradientStart': Colors.pink[200],
-      'gradientEnd': Colors.pink,
-      'waveColor': Colors.pink.withAlpha(60),
-    }
+  static List<DropdownMenuItem> themesList = [
+    DropdownMenuItem(
+      child:Text('Pink'),
+      value: 'pink',
+    ),
+    DropdownMenuItem(
+      child:Text('Purple'),
+      value: 'purple',
+    )
   ];
+
+  static ThemeData pink() {
+    return ThemeData(
+      backgroundColor: Colors.white,
+      primaryColor: Colors.pink,
+      primaryColorDark: Colors.purple,
+      accentColor: Colors.purple,
+      primarySwatch: Colors.red,
+      textSelectionColor: Colors.black,
+      secondaryHeaderColor:  Colors.pink,
+    );
+  }
+
+  static ThemeData purple() {
+    return ThemeData(
+      backgroundColor: Colors.white,
+      primaryColor: Colors.purple,
+      primaryColorDark: Colors.purple,
+      accentColor: Colors.purple,
+      primarySwatch: Colors.red,
+      textSelectionColor: Colors.black,
+      secondaryHeaderColor:  Colors.purple,
+    );
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_events/services/auth.dart';
+import 'package:my_events/services/customisation.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -92,11 +93,19 @@ class SettingsPage extends StatelessWidget {
               ),
               SizedBox(height: 20,),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("id:${user.uid}"),
+                    Container(
+                      width: 100,
+                      child: DropdownButton(
+                        items: Customisation.themesList,
+                        onChanged: (item) {
+                          Customisation.changeTheme(item);
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),

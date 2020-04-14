@@ -32,6 +32,7 @@ dependencies:
   google_maps_flutter:
   simple_animations:
   google_nav_bar:
+  shared_preferences:
 
 dev_dependencies:
   flutter_test:
