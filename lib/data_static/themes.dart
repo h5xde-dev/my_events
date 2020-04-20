@@ -9,6 +9,14 @@ class Themes {
     DropdownMenuItem(
       child:Text('Purple'),
       value: 'purple',
+    ),
+    DropdownMenuItem(
+      child:Text('Red'),
+      value: 'red',
+    ),
+    DropdownMenuItem(
+      child:Text('DarkMilk'),
+      value: 'dark',
     )
   ];
 
@@ -31,8 +39,35 @@ class Themes {
       primaryColorDark: Colors.purple,
       accentColor: Colors.purple,
       primarySwatch: Colors.red,
+      cursorColor: Colors.black,
       textSelectionColor: Colors.black,
       secondaryHeaderColor:  Colors.purple,
+    );
+  }
+
+  static ThemeData red() {
+    return ThemeData(
+      backgroundColor: Colors.white,
+      primaryColor: Colors.red,
+      primaryColorDark: Colors.red,
+      accentColor: Colors.red,
+      primarySwatch: Colors.red,
+      cursorColor: Colors.black,
+      textSelectionColor: Colors.black,
+      secondaryHeaderColor:  Colors.red,
+    );
+  }
+
+  static ThemeData dark() {
+    return ThemeData(
+      backgroundColor: Colors.black,
+      primaryColor: Colors.white,
+      primaryColorDark: Colors.black,
+      accentColor: Colors.white,
+      primarySwatch: Colors.pink,
+      cursorColor: Colors.white,
+      textSelectionColor: Colors.white,
+      secondaryHeaderColor:  Colors.white,
     );
   }
 }

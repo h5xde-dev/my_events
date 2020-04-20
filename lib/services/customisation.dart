@@ -21,6 +21,12 @@ class Customisation {
       case 'purple':
         return Themes.purple();
         break;
+      case 'red':
+        return Themes.red();
+        break;
+      case 'dark':
+        return Themes.dark();
+        break;
       default:
         return Themes.pink();
     }

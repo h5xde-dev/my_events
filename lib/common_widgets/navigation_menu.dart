@@ -38,7 +38,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(color: Theme.of(context).backgroundColor, boxShadow: [
+        decoration: BoxDecoration(color: Theme.of(context).cursorColor, boxShadow: [
           BoxShadow(blurRadius: 20, color: Theme.of(context).primaryColor.withOpacity(.1))
         ]),
         child: SafeArea(
@@ -50,21 +50,32 @@ class _NavigationMenuState extends State<NavigationMenu> {
                 iconSize: 24,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 duration: Duration(milliseconds: 800),
-                tabBackgroundColor: Theme.of(context).textSelectionColor,
+                tabBackgroundColor: Theme.of(context).backgroundColor,
+                textStyle: TextStyle(
+                  color: Theme.of(context).textSelectionColor
+                ),
                 tabs: [
                   GButton(
+                    iconColor: Theme.of(context).backgroundColor,
+                    iconActiveColor: Theme.of(context).primaryColor,
                     icon: Icons.home,
                     text: 'Главная',
                   ),
                   GButton(
+                    iconColor: Theme.of(context).backgroundColor,
+                    iconActiveColor: Theme.of(context).primaryColor,
                     icon: Icons.favorite,
                     text: 'Избранное',
                   ),
                   GButton(
+                    iconColor: Theme.of(context).backgroundColor,
+                    iconActiveColor: Theme.of(context).primaryColor,
                     icon: Icons.map,
                     text: 'Карта',
                   ),
                   GButton(
+                    iconColor: Theme.of(context).backgroundColor,
+                    iconActiveColor: Theme.of(context).primaryColor,
                     icon: Icons.settings,
                     text: 'Настройки',
                   ),
