@@ -39,7 +39,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(color: Theme.of(context).cursorColor, boxShadow: [
-          BoxShadow(blurRadius: 20, color: Theme.of(context).primaryColor.withOpacity(.1))
+          BoxShadow(blurRadius: 20, color: Theme.of(context).primaryColor.withOpacity(0.1))
         ]),
         child: SafeArea(
           child: Padding(

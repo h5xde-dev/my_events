@@ -27,6 +27,7 @@ class Themes {
       primaryColorDark: Colors.purple,
       accentColor: Colors.purple,
       primarySwatch: Colors.red,
+      cursorColor: Colors.black,
       textSelectionColor: Colors.black,
       secondaryHeaderColor:  Colors.pink,
     );

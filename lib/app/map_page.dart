@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:my_events/services/auth.dart';
 import 'package:my_events/services/place.dart';
+import 'package:my_events/app/event_create.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:location/location.dart';
-import 'package:my_events/common_widgets/navigation_menu.dart';
 
 const double CAMERA_ZOOM = 16;
 const double CAMERA_TILT = 80;
@@ -26,6 +25,12 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+
+  _MapPageState({
+      this.auth
+  });
+
+  final AuthBase auth;
 
   final Set<Marker> _markers = {};
 
@@ -132,7 +137,14 @@ class _MapPageState extends State<MapPage> {
       alignment: Alignment.bottomRight,
       children: <Widget>[
         IconButton(icon: Icon(Icons.location_searching), onPressed: ()=>PlaceMark().findLocation()),
-        IconButton(icon: Icon(Icons.add_location), onPressed: () => PlaceMark().createRecord()),
+        //IconButton(icon: Icon(Icons.add_location), onPressed: () => PlaceMark().createRecord()),
+        IconButton(icon: Icon(Icons.add_location), onPressed: () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => EventCreate(auth: auth),
+            ),
+          )
+        ),
         IconButton(icon: Icon(Icons.map), onPressed: _onMapTypeButtonPressed),
       ]
     );

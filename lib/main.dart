@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_events/app/landing_page.dart';
 import 'package:my_events/services/auth.dart';
 import 'package:my_events/services/customisation.dart';
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget
 {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return FutureBuilder(
       future: getUserTheme(),
       builder: (BuildContext context, AsyncSnapshot snapshot){
@@ -37,7 +39,6 @@ class MyApp extends StatelessWidget
             else {
               return MaterialApp(
                 color: Colors.black,
-                
                 debugShowCheckedModeBanner: false,
                 title: 'MyEvents',
                 theme: snapshot.data,
