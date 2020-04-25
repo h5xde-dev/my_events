@@ -36,34 +36,49 @@ class _MapPageState extends State<MapPage> {
 
   final Set<Marker> _markers = {};
 
-  LocationData currentLocation;
+  LocationData _currentLocation;
+
+  bool futureCompleted;
 
   Future <LocationData> __changeLocation() async {
     LocationData currentLocation = await PlaceMark().findLocation();
+      futureCompleted = true;
+      setState(() {
+        _currentLocation = currentLocation;
+      });
       return currentLocation;
   }
 
   @override
   Widget build(BuildContext context){
-    return FutureBuilder(
-      future: __changeLocation(),
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-        switch (snapshot.connectionState) {
+    if(futureCompleted == true)
+    {
+      return AnimatedBackground(
+        child: buildMap(context),
+      );
+
+    } else
+    {
+      return FutureBuilder(
+        future: __changeLocation(),
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          switch (snapshot.connectionState) {
           case ConnectionState.none:
-            return new AnimatedLoading();
+            return AnimatedLoading();
           case ConnectionState.waiting:
-            return new AnimatedLoading();
+            return AnimatedLoading();
           default:
             if (snapshot.hasError)
-              return new AnimatedLoading();
+              return AnimatedLoading();
             else {
-              return new AnimatedBackground(
-                child: buildMap(context, snapshot.data),
+              return AnimatedBackground(
+                child: buildMap(context),
               );
             }
-        }
-      },
-    );
+          }
+        },
+      );
+    }
   }
 
   MapType _currentMapType = MapType.normal;
@@ -74,18 +89,18 @@ class _MapPageState extends State<MapPage> {
     _controller.complete(controller);
   }
 
-  Widget buildMap(BuildContext context, LocationData currentLocation) {
+  Widget buildMap(BuildContext context) {
     CameraPosition initialCameraPosition = CameraPosition(
       zoom: CAMERA_ZOOM,
       tilt: CAMERA_TILT,
       bearing: CAMERA_BEARING,
-      target: LatLng(currentLocation.latitude, currentLocation.longitude)
+      target: LatLng(_currentLocation.latitude, _currentLocation.longitude)
     );
 
-    if (currentLocation != null) {
+    if (_currentLocation != null) {
       initialCameraPosition = CameraPosition(
-         target: LatLng(currentLocation.latitude,
-            currentLocation.longitude),
+         target: LatLng(_currentLocation.latitude,
+            _currentLocation.longitude),
          zoom: CAMERA_ZOOM,
          tilt: CAMERA_TILT,
          bearing: CAMERA_BEARING
@@ -106,6 +121,7 @@ class _MapPageState extends State<MapPage> {
 
   GoogleMap __showMap(context, initialCameraPosition){
     return GoogleMap(
+          onTap: _handleTap,
           markers: _markers,
           onMapCreated: _onMapCreated,
           mapType: _currentMapType,
@@ -114,6 +130,20 @@ class _MapPageState extends State<MapPage> {
           tiltGesturesEnabled: false,
           initialCameraPosition: initialCameraPosition,
         );
+  }
+
+  void _handleTap(LatLng point) {
+    setState(() {
+      _markers.add(Marker(
+        markerId: MarkerId(point.toString()),
+        position: point,
+        infoWindow: InfoWindow(
+          title: 'I am a marker',
+        ),
+        icon:
+            BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+      ));
+    });
   }
 
   void _onMapTypeButtonPressed() {

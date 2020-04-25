@@ -167,7 +167,7 @@ class _EventCreateState extends State<EventCreate> {
               FocusScope.of(context).requestFocus(new FocusNode());
               date = await selectDate();
 
-              DateTime dateString = DateTime(date.day, date.month);
+              String dateString = "${date.day}, ${date.month}";
 
               setState(() {
                 textController.text = "$dateString";

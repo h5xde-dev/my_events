@@ -143,7 +143,7 @@ class EventCard extends StatelessWidget {
             bottom: 0,
             left: 0,
             right: 0,
-            child: ClipRect(  // <-- clips to the 200x200 [Container] below
+            child: ClipRect(
               child: BackdropFilter(
                 filter: ImageFilter.blur(
                   sigmaX: 10.0,
