@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_events/services/auth.dart';
 import 'package:my_events/services/customisation.dart';
+import 'package:my_events/common_widgets/animated_loading.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -36,22 +37,12 @@ class SettingsPage extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot snapshot){
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-            return Center(
-                child:CircularProgressIndicator(
-                  backgroundColor: Colors.white,
-                  strokeWidth: 2.0,
-                )
-              );
+            return new AnimatedLoading();
           case ConnectionState.waiting:
-            return Center(
-                child:CircularProgressIndicator(
-                  backgroundColor: Colors.white,
-                  strokeWidth: 2.0,
-                )
-              );
+            return new AnimatedLoading();
           default:
             if (snapshot.hasError)
-              return CircularProgressIndicator();
+              return new AnimatedLoading();
             else {
               return _buildContent(context, snapshot.data);
             }

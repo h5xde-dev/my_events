@@ -8,17 +8,24 @@ import 'dart:async';
 class LandingPage extends StatefulWidget {
   LandingPage({
     @required this.auth,
+    this.choosenIndex = 0
   });
 
   final AuthBase auth;
+  final int choosenIndex;
 
   @override
-  _LandingPageState createState() => _LandingPageState();
+  _LandingPageState createState() => _LandingPageState(choosenIndex: choosenIndex);
 }
 
 class _LandingPageState extends State<LandingPage> {
 
+  _LandingPageState({
+    this.choosenIndex = 0
+  });
+
   User _user;
+  final choosenIndex;
 
   @override
   void initState() {
@@ -48,19 +55,16 @@ class _LandingPageState extends State<LandingPage> {
         if (snapshot.hasData) {
           User user = snapshot.data;
           if(user == null) {
-          return SignInPage(
-            auth: widget.auth,
-            onSignIn: _updateUser,
-          );
+            return SignInPage(
+              auth: widget.auth,
+              onSignIn: _updateUser,
+            );
           }
           return Scaffold(
-            body: NavigationMenu(auth: Auth()),
+            body: NavigationMenu(auth: Auth(), choosenIndex: choosenIndex,),
           );
         }
-        return SignInPage(
-          auth: widget.auth,
-          onSignIn: _updateUser,
-        );
+        return Text('');
       },
     );
   }

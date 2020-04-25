@@ -5,6 +5,8 @@ import 'package:my_events/app/event_create.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
+import 'package:my_events/common_widgets/animated_background.dart';
+import 'package:my_events/common_widgets/animated_loading.dart';
 import 'package:location/location.dart';
 
 const double CAMERA_ZOOM = 16;
@@ -48,24 +50,16 @@ class _MapPageState extends State<MapPage> {
       builder: (BuildContext context, AsyncSnapshot snapshot){
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-            return Center(
-                child:CircularProgressIndicator(
-                  backgroundColor: Colors.white,
-                  strokeWidth: 2.0,
-                )
-              );
+            return new AnimatedLoading();
           case ConnectionState.waiting:
-            return Center(
-                child:CircularProgressIndicator(
-                  backgroundColor: Colors.white,
-                  strokeWidth: 2.0,
-                )
-              );
+            return new AnimatedLoading();
           default:
             if (snapshot.hasError)
-              return CircularProgressIndicator();
+              return new AnimatedLoading();
             else {
-              return buildMap(context, snapshot.data);
+              return new AnimatedBackground(
+                child: buildMap(context, snapshot.data),
+              );
             }
         }
       },

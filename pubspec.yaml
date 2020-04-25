@@ -33,6 +33,7 @@ dependencies:
   simple_animations:
   google_nav_bar:
   shared_preferences:
+  sleek_circular_slider :
 
 dev_dependencies:
   flutter_test:

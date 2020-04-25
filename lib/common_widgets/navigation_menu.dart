@@ -8,17 +8,33 @@ import 'package:my_events/services/auth.dart';
 class NavigationMenu extends StatefulWidget {
   NavigationMenu({
     @required this.auth,
+    this.choosenIndex = 0
   });
 
   final AuthBase auth;
+  final int choosenIndex;
 
   @override
-  _NavigationMenuState createState() => _NavigationMenuState();
+  _NavigationMenuState createState() => _NavigationMenuState(choosenIndex: choosenIndex);
 }
 
 class _NavigationMenuState extends State<NavigationMenu> {
 
+  _NavigationMenuState({
+    this.choosenIndex = 0
+  });
+
+  int choosenIndex;
+
   int _selectedIndex = 0;
+
+  void findIndex(){
+    if(choosenIndex != 0)
+    {
+      _selectedIndex = choosenIndex;
+    }
+  }
+  
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> _widgetOptions = <Widget>[
@@ -33,6 +49,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
 
   @override
   Widget build(BuildContext context) {
+    findIndex();
     return Scaffold(
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
@@ -83,6 +100,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
                 selectedIndex: _selectedIndex,
                 onTabChange: (index) {
                   setState(() {
+                    choosenIndex = 0;
                     _selectedIndex = index;
                   });
                 }),

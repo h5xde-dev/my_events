@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_events/app/map_page.dart';
+import 'package:my_events/app/landing_page.dart';
 import 'package:my_events/services/auth.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
 import 'package:my_events/common_widgets/custom_input.dart';
@@ -50,7 +50,7 @@ class _EventCreateState extends State<EventCreate> {
                       ),
                       onPressed: () {
                           Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => MapPage(auth: auth),
+                            builder: (context) => LandingPage(auth: Auth(), choosenIndex: 2,),
                           )
                         );
                       },
