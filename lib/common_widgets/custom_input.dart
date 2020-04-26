@@ -10,6 +10,7 @@ class CustomInput extends StatelessWidget {
     this.maxLines,
     this.keyboardType,
     this.validator,
+    this.onSaved,
   });
 
   final String labelText;
@@ -19,6 +20,7 @@ class CustomInput extends StatelessWidget {
   final int maxLines;
   final TextInputType keyboardType;
   final String Function(String) validator;
+  final Function onSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,7 @@ class CustomInput extends StatelessWidget {
         style: TextStyle(
           fontFamily: "Poppins",
         ),
+        onChanged: onSaved,
       ),
     );
   }

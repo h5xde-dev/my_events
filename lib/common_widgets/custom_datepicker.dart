@@ -7,6 +7,7 @@ class CustomDatepicker extends StatelessWidget {
     this.height,
     this.width,
     this.onTap,
+    this.onSaved,
     this.textController,
   });
 
@@ -14,6 +15,7 @@ class CustomDatepicker extends StatelessWidget {
   final double height;
   final double width;
   final Function onTap;
+  final Function onSaved;
   final TextEditingController textController;
 
   @override
@@ -36,6 +38,7 @@ class CustomDatepicker extends StatelessWidget {
           //fillColor: Colors.green
         ),
         onTap: onTap,
+        onSaved: onSaved,
       ),
     );
   }

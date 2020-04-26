@@ -133,7 +133,14 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _handleTap(LatLng point) {
-    setState(() {
+    
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EventCreate(auth: auth, place: point,),
+          ),
+    );
+    /* setState(() {
       _markers.add(Marker(
         markerId: MarkerId(point.toString()),
         position: point,
@@ -143,7 +150,7 @@ class _MapPageState extends State<MapPage> {
         icon:
             BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
       ));
-    });
+    }); */
   }
 
   void _onMapTypeButtonPressed() {
@@ -162,13 +169,6 @@ class _MapPageState extends State<MapPage> {
       children: <Widget>[
         IconButton(icon: Icon(Icons.location_searching), onPressed: ()=>PlaceMark().findLocation()),
         //IconButton(icon: Icon(Icons.add_location), onPressed: () => PlaceMark().createRecord()),
-        IconButton(icon: Icon(Icons.add_location), onPressed: () => Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => EventCreate(auth: auth),
-            ),
-          )
-        ),
         IconButton(icon: Icon(Icons.map), onPressed: _onMapTypeButtonPressed),
       ]
     );

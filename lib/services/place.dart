@@ -1,28 +1,44 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart';
 import 'dart:async';
 
 abstract class PlaceMarkBase {
-  createRecord();
+  createRecord(
+    Map formData,
+    LatLng place,
+  );
 }
 
 class PlaceMark implements PlaceMarkBase{
 
   final databaseReference = Firestore.instance;
 
-  Future<void> createRecord() async {
+  Future<void> createRecord(
+    Map formData,
+    LatLng place
+  ) async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    print(user.uid);
     await databaseReference.collection("places")
       .add({
         'user_id': user.uid,
-        'location': '0.23,0.24',
+        'longitude': place.longitude,
+        'latitude': place.latitude,
+        'name': formData['eventName'],
+        'description':formData['eventDescription'],
+        'address':formData['eventAddress'],
+        'startDay':formData['eventDay'],
+        'startMonth':formData['eventMonth'],
+        'startHour':formData['eventHours'],
+        'startMinute':formData['eventMinutes'],
+        'endDay':formData['eventEndDay'],
+        'endMonth':formData['eventEndMonth'],
+        'endHour':formData['eventEndHours'],
+        'endMinute':formData['eventEndMinutes'],
         'status':'created',
         'visits': 0,
         'rating': 0,
-        'from': 12,
-        'to':13,
       });
   }
 
