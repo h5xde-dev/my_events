@@ -8,6 +8,7 @@ import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
 import 'package:my_events/common_widgets/animated_loading.dart';
 import 'package:location/location.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 const double CAMERA_ZOOM = 16;
 const double CAMERA_TILT = 80;
@@ -34,16 +35,39 @@ class _MapPageState extends State<MapPage> {
 
   final AuthBase auth;
 
-  final Set<Marker> _markers = {};
+  Set<Marker> _markers = {};
 
   LocationData _currentLocation;
 
   bool futureCompleted;
 
+  Future<Set> getData() async {
+    Set<Marker> markers = {};
+    await Firestore.instance
+        .collection("places")
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((f) => markers.add(
+        Marker(
+          markerId: MarkerId(f.documentID),
+          position: LatLng(f.data['latitude'] , f.data['longitude']),
+          infoWindow: InfoWindow(
+            title: f.data['name'],
+            snippet: f.data['description']
+          )
+        )
+      ));
+    });
+    return markers;
+  }
+
   Future <LocationData> __changeLocation() async {
     LocationData currentLocation = await PlaceMark().findLocation();
       futureCompleted = true;
+      Set<Marker> markers = {};
+      markers = await getData();
       setState(() {
+        _markers = markers;
         _currentLocation = currentLocation;
       });
       return currentLocation;

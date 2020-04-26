@@ -42,11 +42,17 @@ class PlaceMark implements PlaceMarkBase{
       });
   }
 
+
+
   Location geolocator = new Location();
 
   bool _serviceEnabled;
   PermissionStatus _permissionGranted;
   LocationData _locationData;
+
+  Future<QuerySnapshot> getAllDocuments() {
+    return databaseReference.collection('places').getDocuments();
+  }
 
   Future findLocation() async {
     _serviceEnabled = await geolocator.serviceEnabled();

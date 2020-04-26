@@ -36,10 +36,13 @@ class _EventCreateState extends State<EventCreate> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void prepareFormData() {
-    print(formData);
     PlaceMark().createRecord(
       formData,
       place
+    );
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => LandingPage(auth: Auth(), choosenIndex: 2,),
+      )
     );
   }
 
