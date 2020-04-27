@@ -2,10 +2,12 @@ import 'dart:async';
 import 'package:my_events/services/auth.dart';
 import 'package:my_events/services/place.dart';
 import 'package:my_events/app/event_create.dart';
+import 'package:my_events/app/event_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
+import 'package:my_events/common_widgets/custom_marker.dart' as customMarker;
 import 'package:my_events/common_widgets/animated_loading.dart';
 import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,8 +15,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 const double CAMERA_ZOOM = 16;
 const double CAMERA_TILT = 80;
 const double CAMERA_BEARING = 30;
-const LatLng SOURCE_LOCATION = LatLng(42.747932,-71.167889);
-const LatLng DEST_LOCATION = LatLng(37.335685,-122.0605916);
 
 class MapPage extends StatefulWidget {
   MapPage({
@@ -47,17 +47,28 @@ class _MapPageState extends State<MapPage> {
         .collection("places")
         .getDocuments()
         .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach((f) => markers.add(
-        Marker(
-          markerId: MarkerId(f.documentID),
-          position: LatLng(f.data['latitude'] , f.data['longitude']),
-          infoWindow: InfoWindow(
-            title: f.data['name'],
-            snippet: f.data['description']
-          )
-        )
-      ));
-    });
+          createMarker(f) async {
+            markers.add(
+              Marker(
+                markerId: MarkerId(f.documentID),
+                position: LatLng(f.data['latitude'] , f.data['longitude']),
+                icon: await customMarker.getMarkerIcon("images/image_01.png", Size(150.0, 150.0), context),
+                onTap: (){
+                  Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EventPage(auth: auth, data: f.data)
+                        ),
+                    );
+                }
+              )
+            );
+            setState(() {
+              _markers = markers;
+            });
+          }
+          snapshot.documents.forEach((f) => createMarker(f));
+        });
     return markers;
   }
 
@@ -139,7 +150,6 @@ class _MapPageState extends State<MapPage> {
   Scaffold __buildContent(context, initialCameraPosition) {
     return Scaffold(
         body: __showMap(context, initialCameraPosition),
-        floatingActionButton: __placeMarkButton(),
       );
   }
 
@@ -150,6 +160,7 @@ class _MapPageState extends State<MapPage> {
           onMapCreated: _onMapCreated,
           mapType: _currentMapType,
           myLocationEnabled: true,
+          zoomControlsEnabled: false,
           compassEnabled: true,
           tiltGesturesEnabled: false,
           initialCameraPosition: initialCameraPosition,
@@ -185,16 +196,10 @@ class _MapPageState extends State<MapPage> {
     });
   }
 
-  FabCircularMenu __placeMarkButton()
+  FloatingActionButton __placeMarkButton()
   {
-    return FabCircularMenu(
-      ringColor: Colors.white70,
-      alignment: Alignment.bottomRight,
-      children: <Widget>[
-        IconButton(icon: Icon(Icons.location_searching), onPressed: ()=>PlaceMark().findLocation()),
-        //IconButton(icon: Icon(Icons.add_location), onPressed: () => PlaceMark().createRecord()),
-        IconButton(icon: Icon(Icons.map), onPressed: _onMapTypeButtonPressed),
-      ]
+    return FloatingActionButton(
+      onPressed: _onMapTypeButtonPressed,
     );
   }
 }

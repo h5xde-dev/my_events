@@ -72,19 +72,7 @@ class _EventCreateState extends State<EventCreate> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Theme.of(context).textSelectionColor,
-                  size: 30.0,
-                ),
-                onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => LandingPage(auth: Auth(), choosenIndex: 2,),
-                    )
-                  );
-                },
-              ),
+              BackButton()
             ],
           ),
         ),

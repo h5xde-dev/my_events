@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_events/common_widgets/animated_background.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class AnimatedLoading extends StatelessWidget {

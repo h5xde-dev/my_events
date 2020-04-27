@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_events/app/sign_in/sign_in_page.dart';
 import 'package:my_events/services/auth.dart';
 import 'package:my_events/common_widgets/navigation_menu.dart';
+import 'package:my_events/common_widgets/animated_loading.dart';
+import 'package:my_events/common_widgets/animated_background.dart';
 
 import 'dart:async';
 
@@ -64,7 +66,18 @@ class _LandingPageState extends State<LandingPage> {
             body: NavigationMenu(auth: Auth(), choosenIndex: choosenIndex,),
           );
         }
-        return Text('');
+        if (snapshot.connectionState == ConnectionState.waiting)
+        {
+          return AnimatedBackground(child:AnimatedLoading());
+        }
+        if (snapshot.connectionState == ConnectionState.none)
+        {
+          return AnimatedBackground(child:AnimatedLoading());
+        }
+        return SignInPage(
+              auth: widget.auth,
+              onSignIn: _updateUser,
+            );
       },
     );
   }
