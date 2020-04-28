@@ -5,7 +5,6 @@ import 'package:my_events/app/event_create.dart';
 import 'package:my_events/app/event_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
 import 'package:my_events/common_widgets/custom_marker.dart' as customMarker;
 import 'package:my_events/common_widgets/animated_loading.dart';

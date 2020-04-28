@@ -143,17 +143,12 @@ class _EventCreateState extends State<EventCreate> {
                   letterSpacing: 0.5,
                 )),
               dateSelector('end'),
-              CustomRaisedButton(
-                color: Theme.of(context).primaryColor,
-                onPressed: () => uploadFile(),
-                child: Text("Готово"),
-              ),
               _image != null    
-              ? Image.file(    
-                  _image,    
-                  height: 150,    
-                )    
-              : Container(height: 150),    
+                ? Image.file(    
+                    _image,    
+                    height: 150,    
+                  )    
+                : Container(height: 150),    
               _image == null    
                   ? CustomRaisedButton(
                       color: Theme.of(context).primaryColor,
@@ -173,6 +168,34 @@ class _EventCreateState extends State<EventCreate> {
                       height: 150,    
                     )    
                   : Container(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(16.0),
+                        ),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                              color: Theme.of(context).textSelectionColor,
+                              offset: const Offset(1.1, 1.1),
+                              blurRadius: 10.0),
+                        ],
+                      ),
+                      child: CustomRaisedButton(
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () => uploadFile(),
+                          child: Text("Готово"),
+                        ),
+                    ),
+                  ),
+                ],
+              ),
             ]
           ),
         ),
@@ -304,7 +327,7 @@ class _EventCreateState extends State<EventCreate> {
   Future uploadFile() async {
     StorageReference storageReference = FirebaseStorage.instance    
         .ref()    
-        .child('events/${Path.basename(_image.path)}}');    
+        .child('events/${Path.basename(_image.path)}');    
     StorageUploadTask uploadTask = storageReference.putFile(_image);    
     await uploadTask.onComplete;    
     print('File Uploaded');    

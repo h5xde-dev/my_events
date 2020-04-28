@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_events/common_widgets/event_card.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_events/common_widgets/animated_loading.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({
@@ -12,37 +14,67 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => new _MainPageState();
 }
 
-List data = [
-    {
-      'title': 'День города',
-      'image': 'images/image_02.jpg',
-    },
-    {
-      'title': 'Ярмарка говна',
-      'image': 'images/image_03.jpg',
-    },
-    {
-      'title': 'Кофе вечер',
-      'image': 'images/image_04.jpg',
-    },
-    {
-      'title': 'Дегустация табака',
-      'image': 'images/image_01.png',
-    },
-];
 
 class _MainPageState extends State<MainPage> {
 
-  var currentPage = data.length - 1.0;
+  List data = [];
+  //var _currentPage = data.length - 1.0;
+  var currentPage;
+  bool futureCompleted = false;
+
+  Future<List> getData() async {
+    List dataFire = [];
+    Set cardInfo = {};
+    await Firestore.instance
+        .collection("places")
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+          createCards(f) {
+            cardInfo.add(f.data);
+          }
+          snapshot.documents.forEach((f) => createCards(f));
+          dataFire.addAll(
+            cardInfo
+          );
+          setState(() {
+            currentPage = dataFire.length - 1.0;
+            futureCompleted = true;
+            data = dataFire;
+          });
+        });
+    return dataFire;
+  }
 
   @override
   Widget build(BuildContext context) {
+
     PageController controller = PageController(initialPage: data.length - 1);
     controller.addListener(() {
       setState(() {
         currentPage = controller.page;
       });
     });
+
+    if(futureCompleted == false)
+    {
+      return FutureBuilder(
+        future: getData(),
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return AnimatedLoading();
+          case ConnectionState.waiting:
+            return AnimatedLoading();
+          default:
+            return _buildContent(controller);
+          }
+        },
+      );
+    }
+    return _buildContent(controller);
+  }
+
+  Widget _buildContent( PageController controller) {
     return AnimatedBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,

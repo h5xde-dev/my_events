@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:ui';
-
 class EventCard extends StatelessWidget {
   EventCard({
     this.currentPage,
@@ -74,12 +73,13 @@ class EventCard extends StatelessWidget {
   }
 
   Widget _cardBox(context, cardAspectRatio, i){
+    print(data[i]['imageBanner']);
     return AspectRatio(
       aspectRatio: cardAspectRatio,
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          Image.asset(data[i]['image']??'images/image_01.png', fit: BoxFit.cover),
+          Image.network(data[i]['imageBanner'], fit: BoxFit.cover)??Image.asset('images/image_01.png', fit: BoxFit.cover),
           Container(
             height: 10,
             child: Align(
@@ -115,7 +115,7 @@ class EventCard extends StatelessWidget {
                           ),
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 6.0),
-                            child: Text(data[i]['description']??'test',
+                            child: Text(data[i]['name']??'test',
                               style: TextStyle(
                                   color: Theme.of(context).textSelectionColor,
                                   fontSize: 15.0,
@@ -128,7 +128,7 @@ class EventCard extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: 16.0, vertical: 8.0),
-                    child: Text(data[i]['description']??'test',
+                    child: Text('test',
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 15.0,
@@ -174,7 +174,7 @@ class EventCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: 16.0, vertical: 8.0),
-            child: Text(data[i]['title']??'test',
+            child: Text(data[i]['name']??'test',
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 25.0,
