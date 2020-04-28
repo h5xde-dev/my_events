@@ -52,7 +52,7 @@ class _MapPageState extends State<MapPage> {
               Marker(
                 markerId: MarkerId(f.documentID),
                 position: LatLng(f.data['latitude'] , f.data['longitude']),
-                icon: await customMarker.getMarkerIcon("images/image_01.png", Size(150.0, 150.0), context),
+                icon: await customMarker.getMarkerIcon(f.data['imageBanner'], Size(150.0, 150.0), context),
                 onTap: (){
                   Navigator.push(
                         context,

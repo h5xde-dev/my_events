@@ -36,6 +36,7 @@ class PlaceMark implements PlaceMarkBase{
         'endMonth':formData['eventEndMonth'],
         'endHour':formData['eventEndHours'],
         'endMinute':formData['eventEndMinutes'],
+        'imageBanner':formData['imageBanner'],
         'status':'created',
         'visits': 0,
         'rating': 0,

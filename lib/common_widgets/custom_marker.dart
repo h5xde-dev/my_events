@@ -1,16 +1,29 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 
-Future<ui.Image> getImageFromPath(String imagePath) async {  
-  final data = await rootBundle.load(imagePath);
-  final list = Uint8List.view(data.buffer);
-  final completer = Completer<ui.Image>();
-  ui.decodeImageFromList(list, completer.complete);
-  print(completer.future.toString());
+final Completer<ui.Image> completer = Completer();
+
+
+
+Future<Uint8List> _downloadFile(String url) async {
+    http.Client client = new http.Client();
+    var req = await client.get(Uri.parse(url));
+    var bytes = req.bodyBytes;
+    return bytes;
+}
+
+Future<ui.Image> getImageFromPath(String imagePath) async {
+    Uint8List imageBytes = await _downloadFile(imagePath);
+    final Completer<ui.Image> completer = new Completer();
+    ui.decodeImageFromList(imageBytes, (ui.Image img) {
+      print(img);
+      return completer.complete(img);
+    });
   return completer.future;
 }
 
@@ -109,6 +122,7 @@ Future<BitmapDescriptor> getMarkerIcon(String imagePath, Size size, BuildContext
 
     // Add image
     ui.Image image = await getImageFromPath(imagePath); // Alternatively use your own method to get the image
+    print(image);
     paintImage(canvas: canvas, image: image, rect: oval, fit: BoxFit.fill);
 
     // Convert canvas to image

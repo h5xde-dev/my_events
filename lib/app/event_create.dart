@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_events/app/landing_page.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:my_events/services/auth.dart';
 import 'package:my_events/services/place.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
 import 'package:my_events/common_widgets/custom_input.dart';
 import 'package:my_events/common_widgets/custom_datepicker.dart';
 import 'package:my_events/common_widgets/custom_raised_button.dart';
+import 'package:path/path.dart' as Path; 
 
 class EventCreate extends StatefulWidget {
   EventCreate({
@@ -29,21 +33,19 @@ class _EventCreateState extends State<EventCreate> {
 
   final AuthBase auth;
   final place;
+
   Map formData = {};
+  File _image;    
+  String _uploadedFileURL;  
 
   TextEditingController textControllerStart = new TextEditingController();
   TextEditingController textControllerEnd = new TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void prepareFormData() {
-    PlaceMark().createRecord(
-      formData,
-      place
-    );
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => LandingPage(auth: Auth(), choosenIndex: 2,),
-      )
-    );
+  void prepareFormData() async {
+    await uploadFile().whenComplete((){
+      
+    });
   }
 
   @override
@@ -143,9 +145,34 @@ class _EventCreateState extends State<EventCreate> {
               dateSelector('end'),
               CustomRaisedButton(
                 color: Theme.of(context).primaryColor,
-                onPressed: () => prepareFormData(),
+                onPressed: () => uploadFile(),
                 child: Text("Готово"),
-              )
+              ),
+              _image != null    
+              ? Image.file(    
+                  _image,    
+                  height: 150,    
+                )    
+              : Container(height: 150),    
+              _image == null    
+                  ? CustomRaisedButton(
+                      color: Theme.of(context).primaryColor,
+                      onPressed: chooseFile,
+                      child: Icon(Icons.photo),
+                    )
+                  : Container(),  
+              _image != null    
+                  ? RaisedButton(    
+                      child: Text('Clear Selection'),    
+                      onPressed: (){},    
+                    )    
+                  : Container(),   
+              _uploadedFileURL != null    
+                  ? Image.network(    
+                      _uploadedFileURL,    
+                      height: 150,    
+                    )    
+                  : Container(),
             ]
           ),
         ),
@@ -264,5 +291,34 @@ class _EventCreateState extends State<EventCreate> {
         ],
       ),
     );
+  }
+
+  Future chooseFile() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {    
+      setState(() {    
+        _image = image;    
+      });    
+    });    
+  }
+
+  Future uploadFile() async {
+    StorageReference storageReference = FirebaseStorage.instance    
+        .ref()    
+        .child('events/${Path.basename(_image.path)}}');    
+    StorageUploadTask uploadTask = storageReference.putFile(_image);    
+    await uploadTask.onComplete;    
+    print('File Uploaded');    
+    storageReference.getDownloadURL().then((fileURL) {
+      print(fileURL);
+      formData.addAll({'imageBanner': "$fileURL"});
+      PlaceMark().createRecord(
+        formData,
+        place
+      );
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => LandingPage(auth: Auth(), choosenIndex: 2,),
+        )
+      );
+    });    
   }
 }

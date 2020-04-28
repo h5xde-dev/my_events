@@ -76,7 +76,7 @@ class _EventPageState extends State<EventPage> with TickerProviderStateMixin {
               children: <Widget>[
                 AspectRatio(
                   aspectRatio: 1.2,
-                  child: Image.asset('images/image_01.png', fit:BoxFit.fill )
+                  child: Image.network('${data['imageBanner']}', fit:BoxFit.fill )
                 ),
               ],
             ),
