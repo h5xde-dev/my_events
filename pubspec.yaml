@@ -25,7 +25,6 @@ dependencies:
   cupertino_icons: ^0.1.2
   firebase_auth: ^0.15.4
   firebase_database:
-  fab_circular_menu:
   cloud_firestore:
   flutter_launcher_icons:
   location: ^3.0.0
@@ -35,6 +34,8 @@ dependencies:
   shared_preferences:
   firebase_storage:
   image_picker:
+  cached_network_image:
+  flutter_cache_manager:
   sleek_circular_slider :
 
 dev_dependencies:

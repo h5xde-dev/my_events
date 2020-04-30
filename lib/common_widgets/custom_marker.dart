@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 
 final Completer<ui.Image> completer = Completer();
@@ -18,9 +19,12 @@ Future<Uint8List> _downloadFile(String url) async {
 }
 
 Future<ui.Image> getImageFromPath(String imagePath) async {
-    Uint8List imageBytes = await _downloadFile(imagePath);
+    //Uint8List imageBytes = await _downloadFile(imagePath);
+    final File markerImageFile = await DefaultCacheManager().getSingleFile(imagePath);
+    final Uint8List markerImageBytes = await markerImageFile.readAsBytes();
+
     final Completer<ui.Image> completer = new Completer();
-    ui.decodeImageFromList(imageBytes, (ui.Image img) {
+    ui.decodeImageFromList(markerImageBytes, (ui.Image img) {
       print(img);
       return completer.complete(img);
     });

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:math';
 import 'dart:ui';
 class EventCard extends StatelessWidget {
@@ -79,7 +80,16 @@ class EventCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          Image.network(data[i]['imageBanner'], fit: BoxFit.cover)??Image.asset('images/image_01.png', fit: BoxFit.cover),
+          CachedNetworkImage(
+            progressIndicatorBuilder: (context, url, progress) =>
+            Center(
+              child: CircularProgressIndicator(
+                value: progress.progress,
+              ),
+            ),
+            imageUrl: data[i]['imageBanner'],
+            fit: BoxFit.fill,
+          ),
           Container(
             height: 10,
             child: Align(

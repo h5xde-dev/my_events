@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_events/services/auth.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class EventPage extends StatefulWidget {
   
@@ -76,7 +77,16 @@ class _EventPageState extends State<EventPage> with TickerProviderStateMixin {
               children: <Widget>[
                 AspectRatio(
                   aspectRatio: 1.2,
-                  child: Image.network('${data['imageBanner']}', fit:BoxFit.fill )
+                  child: CachedNetworkImage(
+                    progressIndicatorBuilder: (context, url, progress) =>
+                      Center(
+                        child: CircularProgressIndicator(
+                          value: progress.progress,
+                        ),
+                      ),
+                    imageUrl: data['imageBanner'],
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ],
             ),
