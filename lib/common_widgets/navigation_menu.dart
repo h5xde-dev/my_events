@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:my_events/app/events_page.dart';
 import 'package:my_events/app/favorites_page.dart';
 import 'package:my_events/app/main_page.dart';
@@ -51,52 +50,25 @@ class _NavigationMenuState extends State<NavigationMenu> {
           ],
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-            child: GNav(
-                gap: 8,
-                activeColor: Theme.of(context).colorScheme.surface,
-                iconSize: 24,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                duration: const Duration(milliseconds: 800),
-                tabBackgroundColor: Theme.of(context).colorScheme.onSurface,
-                tabs: [
-                  GButton(
-                    icon: Icons.home,
-                    text: 'Главная',
-                  ),
-                  GButton(
-                    icon: Icons.grid_view,
-                    text: 'События',
-                  ),
-                  GButton(
-                    icon: Icons.favorite,
-                    text: 'Избранное',
-                  ),
-                  GButton(
-                    icon: Icons.search,
-                    text: 'Поиск',
-                  ),
-                  GButton(
-                    icon: Icons.map,
-                    text: 'Карта',
-                  ),
-                  GButton(
-                    icon: Icons.account_circle,
-                    text: 'Профиль',
-                  ),
-                  GButton(
-                    icon: Icons.settings,
-                    text: 'Настройки',
-                  ),
-                ],
-                selectedIndex: _selectedIndex,
-                onTabChange: (index) {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                }),
+          child: NavigationBar(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            destinations: const [
+              NavigationDestination(icon: Icon(Icons.home), label: 'Главная'),
+              NavigationDestination(icon: Icon(Icons.grid_view), label: 'События'),
+              NavigationDestination(icon: Icon(Icons.favorite), label: 'Избранное'),
+              NavigationDestination(icon: Icon(Icons.search), label: 'Поиск'),
+              NavigationDestination(icon: Icon(Icons.map), label: 'Карта'),
+              NavigationDestination(
+                icon: Icon(Icons.account_circle),
+                label: 'Профиль',
+              ),
+              NavigationDestination(icon: Icon(Icons.settings), label: 'Настройки'),
+            ],
           ),
         ),
       ),

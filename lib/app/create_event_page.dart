@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
+import 'package:my_events/data/event_repository.dart';
+import 'package:my_events/services/analytics_service.dart';
+import 'package:my_events/services/auth.dart';
+import 'package:my_events/services/notifications_service.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -9,10 +13,16 @@ class CreateEventPage extends StatefulWidget {
 }
 
 class _CreateEventPageState extends State<CreateEventPage> {
+  final _repo = const EventRepository();
+  final _auth = Auth();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _placeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String _category = 'Общее';
+  DateTime? _startsAt;
+  bool _isSaving = false;
+  static const _categories = ['Общее', 'Город', 'Маркет', 'Нетворкинг', 'Лаунж'];
 
   @override
   void dispose() {
@@ -44,16 +54,86 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   const SizedBox(height: 12),
                   _field('Место', _placeController),
                   const SizedBox(height: 16),
-                  FilledButton(
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() != true) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Форма сохранена (mock)'),
-                        ),
+                  DropdownButtonFormField<String>(
+                    initialValue: _category,
+                    items: _categories
+                        .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                        .toList(),
+                    onChanged: (v) => setState(() => _category = v ?? 'Общее'),
+                    decoration: const InputDecoration(
+                      labelText: 'Категория',
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton.tonal(
+                    onPressed: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        firstDate: DateTime.now().subtract(const Duration(days: 1)),
+                        lastDate: DateTime.now().add(const Duration(days: 365)),
+                        initialDate: _startsAt ?? DateTime.now(),
                       );
+                      if (picked != null) setState(() => _startsAt = picked);
                     },
-                    child: const Text('Сохранить'),
+                    child: Text(
+                      _startsAt == null
+                          ? 'Выбрать дату'
+                          : 'Дата: ${_startsAt!.day}.${_startsAt!.month}.${_startsAt!.year}',
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  FilledButton(
+                    onPressed: _isSaving
+                        ? null
+                        : () async {
+                            if (_formKey.currentState?.validate() != true) {
+                              return;
+                            }
+                            setState(() => _isSaving = true);
+                            try {
+                              final user = await _auth.currentUser();
+                              if (user == null) {
+                                throw StateError('Пользователь не авторизован');
+                              }
+                              await _repo.createEvent(
+                                title: _titleController.text,
+                                description: _descriptionController.text,
+                                place: _placeController.text,
+                                category: _category,
+                                startsAt: _startsAt,
+                                createdBy: user.uid,
+                              );
+                              await AnalyticsService.logCreateEvent(
+                                category: _category,
+                              );
+                              await NotificationsService.scheduleLocalReminder(
+                                id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+                                title: 'Событие сохранено',
+                                body: 'Добавили "${_titleController.text.trim()}" в список',
+                              );
+                              if (!mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Событие создано'),
+                                ),
+                              );
+                              Navigator.of(context).pop();
+                            } catch (e) {
+                              if (!mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Не удалось сохранить событие. $e'),
+                                ),
+                              );
+                            } finally {
+                              if (mounted) {
+                                setState(() => _isSaving = false);
+                              }
+                            }
+                          },
+                    child: Text(_isSaving ? 'Сохраняем...' : 'Сохранить'),
                   ),
                 ],
               ),

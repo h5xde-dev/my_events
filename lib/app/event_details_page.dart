@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:my_events/app/edit_event_page.dart';
 import 'package:my_events/models/event.dart';
+import 'package:my_events/services/auth.dart';
 import 'package:my_events/state/favorites_scope.dart';
 
 class EventDetailsPage extends StatelessWidget {
@@ -13,13 +15,14 @@ class EventDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final favorites = FavoritesScope.of(context);
     final isFav = favorites.isFavorite(event.id);
+    final auth = Auth();
 
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(event.imageAsset, fit: BoxFit.cover),
+          _eventImage(event.imageAsset),
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
@@ -46,6 +49,23 @@ class EventDetailsPage extends StatelessWidget {
                         onPressed: () => favorites.toggle(event.id),
                         icon: Icon(isFav ? Icons.favorite : Icons.favorite_border),
                         color: Colors.white,
+                      ),
+                      FutureBuilder<User?>(
+                        future: auth.currentUser(),
+                        builder: (context, snapshot) {
+                          final canEdit = event.createdBy != null &&
+                              snapshot.data?.uid == event.createdBy;
+                          if (!canEdit) return const SizedBox.shrink();
+                          return IconButton(
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => EditEventPage(event: event),
+                              ),
+                            ),
+                            icon: const Icon(Icons.edit),
+                            color: Colors.white,
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -87,6 +107,17 @@ class EventDetailsPage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 14),
+                            if (event.place.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: Text(
+                                  'Место: ${event.place}',
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
                             FilledButton(
                               onPressed: () {},
                               style: FilledButton.styleFrom(
@@ -107,6 +138,18 @@ class EventDetailsPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _eventImage(String path) {
+    if (path.startsWith('http')) {
+      return Image.network(
+        path,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) =>
+            Image.asset('images/image_01.png', fit: BoxFit.cover),
+      );
+    }
+    return Image.asset(path, fit: BoxFit.cover);
   }
 }
 

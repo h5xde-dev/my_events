@@ -70,7 +70,7 @@ class EventCard extends StatelessWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: <Widget>[
-                      Image.asset(events[i].imageAsset, fit: BoxFit.cover),
+                      _eventImage(events[i]),
                       Positioned(
                         top: 10,
                         right: 12,
@@ -284,5 +284,17 @@ class EventCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _eventImage(Event event) {
+    if (event.imageAsset.startsWith('http')) {
+      return Image.network(
+        event.imageAsset,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) =>
+            Image.asset('images/image_01.png', fit: BoxFit.cover),
+      );
+    }
+    return Image.asset(event.imageAsset, fit: BoxFit.cover);
   }
 }

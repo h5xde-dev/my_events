@@ -3,9 +3,10 @@ import 'package:my_events/app/events_page.dart';
 import 'package:my_events/app/profile_page.dart';
 import 'package:my_events/app/search_page.dart';
 import 'package:flutter/material.dart';
-import 'package:my_events/data/event_repository.dart';
 import 'package:my_events/common_widgets/event_card.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
+import 'package:my_events/models/event.dart';
+import 'package:my_events/state/events_scope.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -15,16 +16,14 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final _repo = EventRepository();
-  late final events = _repo.getPopularEvents();
+  List<Event> events = const [];
   late final PageController _controller;
   double currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-    currentPage = events.length - 1.0;
-    _controller = PageController(initialPage: events.length - 1)
+    _controller = PageController(initialPage: 0)
       ..addListener(() {
         final page = _controller.page;
         if (page == null) return;
@@ -40,12 +39,28 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final eventsController = EventsScope.of(context);
+    final sourceEvents = eventsController.events;
+    if (sourceEvents.isNotEmpty && events != sourceEvents) {
+      events = sourceEvents;
+      if (_controller.hasClients) {
+        final targetPage = (events.length - 1).clamp(0, events.length - 1);
+        _controller.jumpToPage(targetPage);
+      }
+      currentPage = (events.length - 1).toDouble();
+    }
+
     return AnimatedBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              if (eventsController.isLoading)
+                const Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: LinearProgressIndicator(),
+                ),
               Padding(
                 padding: const EdgeInsets.only(
                     left: 12.0, right: 12.0, top: 30.0, bottom: 8.0),
@@ -150,20 +165,28 @@ class _MainPageState extends State<MainPage> {
               ),
               Stack(
                 children: <Widget>[
-                  EventCard(
-                    currentPage:currentPage,
-                    events: events,
-                  ),
-                  Positioned.fill(
-                    child: PageView.builder(
-                      itemCount: events.length,
-                      controller: _controller,
-                      reverse: true,
-                      itemBuilder: (context, index) {
-                        return Container();
-                      },
+                  if (events.isNotEmpty) ...[
+                    EventCard(
+                      currentPage: currentPage,
+                      events: events,
                     ),
-                  )
+                    Positioned.fill(
+                      child: PageView.builder(
+                        itemCount: events.length,
+                        controller: _controller,
+                        reverse: true,
+                        itemBuilder: (context, index) {
+                          return Container();
+                        },
+                      ),
+                    ),
+                  ] else
+                    const SizedBox(
+                      height: 320,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
                 ],
               ),
               Padding(

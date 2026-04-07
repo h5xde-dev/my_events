@@ -1,6 +1,6 @@
 # My Events
 
-Flutter-приложение для просмотра и поиска событий с карточками, деталями, избранным, картой и базовыми настройками.
+Flutter-приложение для просмотра и поиска событий с карточками, деталями, избранным, картой, профилем и базовыми настройками.
 
 ## Что есть в проекте
 
@@ -10,11 +10,13 @@ Flutter-приложение для просмотра и поиска собы�
 - Детальная страница события.
 - Страница всех событий.
 - Поиск по событиям.
-- Избранное (локальное состояние в приложении).
+- Избранное (сохранение в Firestore для пользователя).
 - Карта (`google_maps_flutter` + `location`).
-- Профиль (базовый экран-заглушка под дальнейшее развитие).
+- Профиль (загрузка и редактирование).
 - Настройки (переключение темы).
-- Экран создания события (форма, mock-сохранение).
+- Экран создания события (форма + сохранение в Firestore).
+- Базовый контур аналитики (`firebase_analytics`).
+- Базовый контур уведомлений (`firebase_messaging` + `flutter_local_notifications`).
 
 ## Архитектура
 
@@ -22,7 +24,7 @@ Flutter-приложение для просмотра и поиска собы�
 
 - `lib/models` — доменные модели (`Event`).
 - `lib/data` — источники данных (`EventRepository`).
-- `lib/state` — локальное состояние (`FavoritesController`, `FavoritesScope`).
+- `lib/state` — состояние (`EventsController`, `FavoritesController` и scope).
 - `lib/app` — страницы приложения.
 - `lib/common_widgets` — переиспользуемые UI-компоненты.
 - `lib/services` — интеграции (Auth, Place, Theme customization).
@@ -50,6 +52,13 @@ flutter run
 flutter analyze
 flutter test
 ```
+
+## MVP и критерии готовности
+
+- Definition of Done и acceptance criteria: `MVP_CHECKLIST.md`
+- Firestore security rules: `firestore.rules`
+- Firestore indexes: `firestore.indexes.json`
+- CI pipeline: `.github/workflows/flutter_ci.yml`
 
 ## Планы развития
 
