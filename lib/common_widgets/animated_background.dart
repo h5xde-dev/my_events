@@ -1,33 +1,25 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:simple_animations/simple_animations.dart';
 
 class AnimatedBackground extends StatelessWidget {
-
-  AnimatedBackground({
-    this.child,
-    this.currentTheme
-  });
-
+  const AnimatedBackground({super.key, required this.child});
   final Widget child;
-  final Map currentTheme;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Positioned.fill(child: AnimatedGradient(currentTheme:currentTheme)),
-        onBottom(AnimatedWave(
+        const Positioned.fill(child: AnimatedGradient()),
+        onBottom(const AnimatedWave(
           height: 100,
           speed: 0.3,
         )),
-        onBottom(AnimatedWave(
+        onBottom(const AnimatedWave(
           height: 120,
           speed: 0.4,
           offset: pi,
         )),
-        onBottom(AnimatedWave(
+        onBottom(const AnimatedWave(
           height: 140,
           speed: 0.4,
           offset: pi / 2,
@@ -45,46 +37,66 @@ class AnimatedBackground extends StatelessWidget {
       );
 }
 
-class AnimatedWave extends StatelessWidget {
+class AnimatedWave extends StatefulWidget {
   final double height;
   final double speed;
   final double offset;
 
-  AnimatedWave({
-    this.height,
-    this.speed,
-    this.offset = 0.0
+  const AnimatedWave({
+    super.key,
+    required this.height,
+    required this.speed,
+    this.offset = 0.0,
   });
+
+  @override
+  State<AnimatedWave> createState() => _AnimatedWaveState();
+}
+
+class _AnimatedWaveState extends State<AnimatedWave>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: (5000 / widget.speed).round()),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      return Container(
-        height: height,
+      return SizedBox(
+        height: widget.height,
         width: constraints.biggest.width,
-        child: ControlledAnimation(
-            playback: Playback.LOOP,
-            duration: Duration(milliseconds: (5000 / speed).round()),
-            tween: Tween(begin: 0.0, end: 2 * pi),
-            builder: (context, value) {
-              return CustomPaint(
-                foregroundPainter: CurvePainter(context:context, value:value + offset),
-              );
-            }),
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, _) {
+            final value = _controller.value * 2 * pi + widget.offset;
+            return CustomPaint(
+              foregroundPainter: CurvePainter(context: context, value: value),
+            );
+          },
+        ),
       );
     });
   }
 }
 
 class CurvePainter extends CustomPainter {
-
-  CurvePainter({
-    this.value,
-    this.context
-  });
+  CurvePainter({required this.value, required this.context});
 
   final double value;
-  final context;
+  final BuildContext context;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -115,37 +127,28 @@ class CurvePainter extends CustomPainter {
 }
 
 class AnimatedGradient extends StatelessWidget {
-
-  AnimatedGradient({
-    this.currentTheme
-  });
-
-  final Map currentTheme;
+  const AnimatedGradient({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final tween = MultiTrackTween([
-      Track("color1").add(Duration(seconds: 3),
-          ColorTween(begin: Theme.of(context).backgroundColor, end: Theme.of(context).primaryColor)),
-      Track("color2").add(Duration(seconds: 3),
-          ColorTween(begin: Theme.of(context).primaryColor, end: Theme.of(context).accentColor))
-    ]);
-
-    return ControlledAnimation(
-      playback: Playback.MIRROR,
-      tween: tween,
-      duration: tween.duration,
-      builder: (context, animation) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: const Duration(seconds: 3),
+      curve: Curves.easeInOut,
+      onEnd: () {},
+      builder: (context, value, _) {
+        final surface = Theme.of(context).colorScheme.surface;
+        final primary = Theme.of(context).colorScheme.primary;
+        final color1 = Color.lerp(surface, primary, value) ?? surface;
         return Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.center,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Theme.of(context).backgroundColor,
-                    Theme.of(context).backgroundColor,
-                    animation["color1"],
-                    //animation["color2"],
+                    surface,
+                    surface,
+                    color1,
                   ])),
         );
       },

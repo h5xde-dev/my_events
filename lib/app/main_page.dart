@@ -1,48 +1,45 @@
+import 'package:my_events/app/create_event_page.dart';
+import 'package:my_events/app/events_page.dart';
+import 'package:my_events/app/profile_page.dart';
+import 'package:my_events/app/search_page.dart';
 import 'package:flutter/material.dart';
+import 'package:my_events/data/event_repository.dart';
 import 'package:my_events/common_widgets/event_card.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
 
 class MainPage extends StatefulWidget {
-  MainPage({
-    auth,
-    onSignOut
-  });
+  const MainPage({super.key});
 
   @override
-  _MainPageState createState() => new _MainPageState();
+  _MainPageState createState() => _MainPageState();
 }
 
-List data = [
-    {
-      'title': 'День города',
-      'image': 'images/image_02.jpg',
-    },
-    {
-      'title': 'Ярмарка говна',
-      'image': 'images/image_03.jpg',
-    },
-    {
-      'title': 'Кофе вечер',
-      'image': 'images/image_04.jpg',
-    },
-    {
-      'title': 'Дегустация табака',
-      'image': 'images/image_01.png',
-    },
-];
-
 class _MainPageState extends State<MainPage> {
+  final _repo = EventRepository();
+  late final events = _repo.getPopularEvents();
+  late final PageController _controller;
+  double currentPage = 0;
 
-  var currentPage = data.length - 1.0;
+  @override
+  void initState() {
+    super.initState();
+    currentPage = events.length - 1.0;
+    _controller = PageController(initialPage: events.length - 1)
+      ..addListener(() {
+        final page = _controller.page;
+        if (page == null) return;
+        setState(() => currentPage = page);
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    PageController controller = PageController(initialPage: data.length - 1);
-    controller.addListener(() {
-      setState(() {
-        currentPage = controller.page;
-      });
-    });
     return AnimatedBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -58,18 +55,26 @@ class _MainPageState extends State<MainPage> {
                     IconButton(
                       icon: Icon(
                         Icons.account_circle,
-                        color: Theme.of(context).textSelectionColor,
+                        color: Theme.of(context).colorScheme.onSurface,
                         size: 30.0,
                       ),
-                      onPressed: () {},
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ProfilePage(),
+                        ),
+                      ),
                     ),
                     IconButton(
                       icon: Icon(
                         Icons.search,
-                        color: Theme.of(context).textSelectionColor,
+                        color: Theme.of(context).colorScheme.onSurface,
                         size: 30.0,
                       ),
-                      onPressed: () {},
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const SearchPage(),
+                        ),
+                      ),
                     )
                   ],
                 ),
@@ -81,7 +86,7 @@ class _MainPageState extends State<MainPage> {
                   children: <Widget>[
                     Text("Популярные",
                         style: TextStyle(
-                          color: Theme.of(context).textSelectionColor,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontSize: 46.0,
                           fontFamily: "Calibre-Semibold",
                           letterSpacing: 1.0,
@@ -111,7 +116,35 @@ class _MainPageState extends State<MainPage> {
                       width: 15.0,
                     ),
                     Text("25+ Событий",
-                        style: TextStyle(color: Theme.of(context).secondaryHeaderColor))
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ))
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                child: Row(
+                  children: [
+                    FilledButton.icon(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const EventsPage(),
+                        ),
+                      ),
+                      icon: const Icon(Icons.grid_view),
+                      label: const Text('Каталог'),
+                    ),
+                    const SizedBox(width: 10),
+                    OutlinedButton.icon(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const CreateEventPage(),
+                        ),
+                      ),
+                      icon: const Icon(Icons.add),
+                      label: const Text('Создать'),
+                    ),
                   ],
                 ),
               ),
@@ -119,12 +152,12 @@ class _MainPageState extends State<MainPage> {
                 children: <Widget>[
                   EventCard(
                     currentPage:currentPage,
-                    data:data,
+                    events: events,
                   ),
                   Positioned.fill(
                     child: PageView.builder(
-                      itemCount: data.length,
-                      controller: controller,
+                      itemCount: events.length,
+                      controller: _controller,
                       reverse: true,
                       itemBuilder: (context, index) {
                         return Container();
@@ -140,7 +173,7 @@ class _MainPageState extends State<MainPage> {
                   children: <Widget>[
                     Text("Избранные",
                         style: TextStyle(
-                          color: Theme.of(context).textSelectionColor,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontSize: 46.0,
                           fontFamily: "Calibre-Semibold",
                           letterSpacing: 1.0,
@@ -149,7 +182,7 @@ class _MainPageState extends State<MainPage> {
                       icon: Icon(
                         Icons.favorite,
                         size: 30.0,
-                        color: Theme.of(context).textSelectionColor,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                       onPressed: () {},
                     )
@@ -178,7 +211,9 @@ class _MainPageState extends State<MainPage> {
                       width: 15.0,
                     ),
                     Text("9+ Событий",
-                        style: TextStyle(color: Theme.of(context).secondaryHeaderColor))
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ))
                   ],
                 ),
               ),

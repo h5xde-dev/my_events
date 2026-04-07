@@ -3,26 +3,20 @@ import 'package:my_events/data_static/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Customisation {
+  static const _themeKey = 'theme';
+  static final ValueNotifier<ThemeData> themeNotifier =
+      ValueNotifier<ThemeData>(Themes.pink());
 
-  static List <DropdownMenuItem>themesList = Themes.themesList;
+  static List<DropdownMenuItem<String>> themesList = Themes.themesList;
+
+  static Future<void> init() async {
+    final prefs = await SharedPreferences.getInstance();
+    themeNotifier.value = Themes.fromName(prefs.getString(_themeKey));
+  }
 
   static Future<void> changeTheme(String themeName) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('theme', themeName);
-  }
-
-  static Future<ThemeData> getTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    switch (prefs.getString('theme')) {
-      case 'pink':
-        return Themes.pink();
-        break;
-      case 'purple':
-        return Themes.purple();
-        break;
-      default:
-        return Themes.pink();
-    }
+    await prefs.setString(_themeKey, themeName);
+    themeNotifier.value = Themes.fromName(themeName);
   }
 }

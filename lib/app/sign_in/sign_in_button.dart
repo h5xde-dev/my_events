@@ -3,16 +3,17 @@ import 'package:my_events/common_widgets/custom_raised_button.dart';
 
 class SignInButton extends CustomRaisedButton {
   SignInButton({
-    @required String text,
-    Color color,
-    Color textColor,
-    VoidCallback onPressed
-  }) :  assert(text != null),
-        super(
+    super.key,
+    required String text,
+    required Color color,
+    required Color textColor,
+    required VoidCallback onPressed,
+  }) : super(
           child: Text(
-            text, style:TextStyle(color: textColor, fontSize: 15.0)
+            text,
+            style: TextStyle(color: textColor, fontSize: 15.0),
           ),
-          color:color,
+          color: color,
           onPressed: onPressed,
         );
 }

@@ -1,55 +1,48 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart';
-import 'dart:async';
 
 abstract class PlaceMarkBase {
-  createRecord();
+  Future<void> createRecord();
+  Future<LocationData?> findLocation();
 }
 
-class PlaceMark implements PlaceMarkBase{
-
-  final databaseReference = Firestore.instance;
+class PlaceMark implements PlaceMarkBase {
+  final databaseReference = FirebaseFirestore.instance;
+  final Location geolocator = Location();
 
   Future<void> createRecord() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    print(user.uid);
-    await databaseReference.collection("places")
-      .add({
+    final user = firebase_auth.FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    await databaseReference.collection("places").add({
         'user_id': user.uid,
         'location': '0.23,0.24',
-        'status':'created',
+        'status': 'created',
         'visits': 0,
         'rating': 0,
         'from': 12,
-        'to':13,
+        'to': 13,
       });
   }
 
-  Location geolocator = new Location();
-
-  bool _serviceEnabled;
-  PermissionStatus _permissionGranted;
-  LocationData _locationData;
-
-  Future findLocation() async {
-    _serviceEnabled = await geolocator.serviceEnabled();
-      if (!_serviceEnabled) {
-        _serviceEnabled = await geolocator.requestService();
-        if (!_serviceEnabled) {
-        
-        }
+  @override
+  Future<LocationData?> findLocation() async {
+    var serviceEnabled = await geolocator.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await geolocator.requestService();
+      if (!serviceEnabled) {
+        return null;
       }
+    }
 
-    _permissionGranted = await geolocator.hasPermission();
-      if (_permissionGranted == PermissionStatus.denied) {
-        _permissionGranted = await geolocator.requestPermission();
-        if (_permissionGranted != PermissionStatus.granted) {
-          
-        }
+    var permissionGranted = await geolocator.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await geolocator.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return null;
       }
-    _locationData = await geolocator.getLocation();
-    
-    return _locationData;
+    }
+
+    return geolocator.getLocation();
   }
 }

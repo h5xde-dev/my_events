@@ -3,63 +3,46 @@ import 'package:my_events/services/auth.dart';
 import 'package:my_events/services/customisation.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
 
-class SettingsPage extends StatelessWidget {
-  SettingsPage({
-    @required this.auth,
-  });
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key, required this.auth});
 
   final AuthBase auth;
 
-  Future<void> _signOut(context) async {
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  String _selectedTheme = 'pink';
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTheme = Customisation.themeNotifier.value.colorScheme.primary ==
+            Colors.purple
+        ? 'purple'
+        : 'pink';
+  }
+
+  Future<void> _signOut(BuildContext context) async {
     try {
-      await auth.signOut();
+      await widget.auth.signOut();
       onSignOut(context);
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 
-  void onSignOut(context){
-     Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false );
+  void onSignOut(BuildContext context) {
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   @override
   Widget build(BuildContext context) {
-
-    Future<User> _checkCurrentUser() async {
-      User _user = await Auth().currentUser();
-      return _user;
-    }
-    
-    return FutureBuilder(
-      future: _checkCurrentUser(),
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-            return Center(
-                child:CircularProgressIndicator(
-                  backgroundColor: Colors.white,
-                  strokeWidth: 2.0,
-                )
-              );
-          case ConnectionState.waiting:
-            return Center(
-                child:CircularProgressIndicator(
-                  backgroundColor: Colors.white,
-                  strokeWidth: 2.0,
-                )
-              );
-          default:
-            if (snapshot.hasError)
-              return CircularProgressIndicator();
-            else {
-              return _buildContent(context, snapshot.data);
-            }
-        }
-      });
+    return _buildContent(context);
   }
 
-  Widget _buildContent(context, user) {
+  Widget _buildContent(BuildContext context) {
     return AnimatedBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -75,7 +58,7 @@ class SettingsPage extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         Icons.account_circle,
-                        color: Theme.of(context).textSelectionColor,
+                        color: Theme.of(context).colorScheme.onSurface,
                         size: 30.0,
                       ),
                       onPressed: () {},
@@ -83,7 +66,7 @@ class SettingsPage extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         Icons.exit_to_app,
-                        color: Theme.of(context).textSelectionColor,
+                        color: Theme.of(context).colorScheme.onSurface,
                         size: 30.0,
                       ),
                       onPressed: () => _signOut(context),
@@ -91,17 +74,20 @@ class SettingsPage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 20,),
+              const SizedBox(height: 20),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(
+                    SizedBox(
                       width: 100,
-                      child: DropdownButton(
+                      child: DropdownButton<String>(
+                        value: _selectedTheme,
                         items: Customisation.themesList,
                         onChanged: (item) {
+                          if (item == null) return;
+                          setState(() => _selectedTheme = item);
                           Customisation.changeTheme(item);
                         },
                       ),
@@ -109,7 +95,7 @@ class SettingsPage extends StatelessWidget {
                   ],
                 ),
               ),
-            ]
+            ],
           ),
         ),
       ),

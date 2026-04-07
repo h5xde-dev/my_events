@@ -3,23 +3,23 @@ import 'package:my_events/app/sign_in/social_sign_in_button.dart';
 import 'package:my_events/app/sign_in/sign_in_button.dart';
 import 'package:my_events/services/auth.dart';
 import 'package:my_events/common_widgets/animated_background.dart';
-import 'dart:async';
 
 class SignInPage extends StatelessWidget {
   SignInPage({
-    @required this.auth,
-    @required this.onSignIn,
+    super.key,
+    required this.auth,
+    required this.onSignIn,
   });
   
-  final Function(User) onSignIn;
+  final ValueChanged<User> onSignIn;
   final AuthBase auth;
 
   Future<void> _signInAnonymously() async {
     try {
-      User user =  await auth.signInAnonymously();
+      final user = await auth.signInAnonymously();
       onSignIn(user);
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 
@@ -36,7 +36,7 @@ class SignInPage extends StatelessWidget {
 
   Padding __buildContent() {
     return Padding(
-        padding:EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -49,7 +49,7 @@ class SignInPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 48.0),
+            const SizedBox(height: 48.0),
             SocialSignInButton(
               assetName: 'images/google-logo.png',
               text: 'Войти через гугл',
@@ -58,14 +58,14 @@ class SignInPage extends StatelessWidget {
               onPressed: _signInAnonymously,
             ),
 
-            SizedBox(height: 8.0),
-            Text(
+            const SizedBox(height: 8.0),
+            const Text(
               'or',
               style: TextStyle(fontSize: 14.0, color: Colors.black87),
               textAlign: TextAlign.center,
             ),
 
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             SignInButton(
               text: 'Без регистрации',
               textColor: Colors.white,

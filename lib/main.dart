@@ -1,51 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:my_events/app/landing_page.dart';
 import 'package:my_events/services/auth.dart';
 import 'package:my_events/services/customisation.dart';
+import 'package:my_events/state/favorites_controller.dart';
+import 'package:my_events/state/favorites_scope.dart';
 
-void main() {
-  runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  await Customisation.init();
+  runApp(const MyApp());
 }
-Future <ThemeData> getUserTheme() async{
-  return await Customisation.getTheme();
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
 }
-class MyApp extends StatelessWidget
-{
+
+class _MyAppState extends State<MyApp> {
+  final FavoritesController _favoritesController = FavoritesController();
+
+  @override
+  void dispose() {
+    _favoritesController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getUserTheme(),
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-            return Center(
-                child:CircularProgressIndicator(
-                  backgroundColor: Colors.white,
-                  strokeWidth: 2.0,
-                )
-              );
-          case ConnectionState.waiting:
-            return Center(
-                child:CircularProgressIndicator(
-                  backgroundColor: Colors.white,
-                  strokeWidth: 2.0,
-                )
-              );
-          default:
-            if (snapshot.hasError)
-              return CircularProgressIndicator();
-            else {
-              return MaterialApp(
-                color: Colors.black,
-                
-                debugShowCheckedModeBanner: false,
-                title: 'MyEvents',
-                theme: snapshot.data,
-                home: LandingPage(auth:Auth())
-              );
-            }
-        }
-      },
+    return FavoritesScope(
+      controller: _favoritesController,
+      child: ValueListenableBuilder<ThemeData>(
+        valueListenable: Customisation.themeNotifier,
+        builder: (context, theme, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'MyEvents',
+            theme: theme,
+            home: LandingPage(auth: Auth()),
+          );
+        },
+      ),
     );
   }
 }

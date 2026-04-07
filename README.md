@@ -1,16 +1,58 @@
-# my_events
+# My Events
 
-A new Flutter project.
+Flutter-приложение для просмотра и поиска событий с карточками, деталями, избранным, картой и базовыми настройками.
 
-## Getting Started
+## Что есть в проекте
 
-This project is a starting point for a Flutter application.
+- Современный Flutter (null-safety, Material 3).
+- Экран авторизации (анонимный вход через Firebase Auth).
+- Главный экран с карточками событий в фирменном стиле.
+- Детальная страница события.
+- Страница всех событий.
+- Поиск по событиям.
+- Избранное (локальное состояние в приложении).
+- Карта (`google_maps_flutter` + `location`).
+- Профиль (базовый экран-заглушка под дальнейшее развитие).
+- Настройки (переключение темы).
+- Экран создания события (форма, mock-сохранение).
 
-A few resources to get you started if this is your first Flutter project:
+## Архитектура
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Проект разделен на базовые слои:
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- `lib/models` — доменные модели (`Event`).
+- `lib/data` — источники данных (`EventRepository`).
+- `lib/state` — локальное состояние (`FavoritesController`, `FavoritesScope`).
+- `lib/app` — страницы приложения.
+- `lib/common_widgets` — переиспользуемые UI-компоненты.
+- `lib/services` — интеграции (Auth, Place, Theme customization).
+
+## Навигация (нижнее меню)
+
+- `Главная`
+- `События`
+- `Избранное`
+- `Поиск`
+- `Карта`
+- `Профиль`
+- `Настройки`
+
+## Запуск
+
+```bash
+flutter pub get
+flutter run
+```
+
+## Проверка качества
+
+```bash
+flutter analyze
+flutter test
+```
+
+## Планы развития
+
+- Подключить реальное создание/редактирование событий через Firestore.
+- Добавить фильтры по дате/категориям.
+- Реализовать персональный профиль пользователя.

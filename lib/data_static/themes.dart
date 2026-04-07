@@ -1,38 +1,48 @@
 import 'package:flutter/material.dart';
 
 class Themes {
-  static List<DropdownMenuItem> themesList = [
+  static List<DropdownMenuItem<String>> themesList = [
     DropdownMenuItem(
-      child:Text('Pink'),
+      child: Text('Pink'),
       value: 'pink',
     ),
     DropdownMenuItem(
-      child:Text('Purple'),
+      child: Text('Purple'),
       value: 'purple',
-    )
+    ),
   ];
+
+  static ThemeData fromName(String? themeName) {
+    switch (themeName) {
+      case 'purple':
+        return purple();
+      case 'pink':
+      default:
+        return pink();
+    }
+  }
 
   static ThemeData pink() {
     return ThemeData(
-      backgroundColor: Colors.white,
-      primaryColor: Colors.pink,
-      primaryColorDark: Colors.purple,
-      accentColor: Colors.purple,
-      primarySwatch: Colors.red,
-      textSelectionColor: Colors.black,
-      secondaryHeaderColor:  Colors.pink,
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.pink,
+        primary: Colors.pink,
+        secondary: Colors.purple,
+        surface: Colors.white,
+      ),
     );
   }
 
   static ThemeData purple() {
     return ThemeData(
-      backgroundColor: Colors.white,
-      primaryColor: Colors.purple,
-      primaryColorDark: Colors.purple,
-      accentColor: Colors.purple,
-      primarySwatch: Colors.red,
-      textSelectionColor: Colors.black,
-      secondaryHeaderColor:  Colors.purple,
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.purple,
+        primary: Colors.purple,
+        secondary: Colors.purpleAccent,
+        surface: Colors.white,
+      ),
     );
   }
 }
