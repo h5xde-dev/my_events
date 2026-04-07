@@ -8,6 +8,9 @@ class Event {
   final String place;
   final String category;
   final DateTime? startsAt;
+  final int priceTier;
+  final double distanceKm;
+  final int friendsGoing;
   final String? createdBy;
   final DateTime? createdAt;
 
@@ -19,6 +22,9 @@ class Event {
     this.place = '',
     this.category = 'Общее',
     this.startsAt,
+    this.priceTier = 1,
+    this.distanceKm = 1.0,
+    this.friendsGoing = 0,
     this.createdBy,
     this.createdAt,
   });
@@ -32,6 +38,9 @@ class Event {
       place: (data['place'] as String?) ?? '',
       category: (data['category'] as String?) ?? 'Общее',
       startsAt: _parseDate(data['startsAt']),
+      priceTier: _parseInt(data['priceTier']) ?? 1,
+      distanceKm: _parseDouble(data['distanceKm']) ?? 1.0,
+      friendsGoing: _parseInt(data['friendsGoing']) ?? 0,
       createdBy: data['createdBy'] as String?,
       createdAt: _parseDate(data['createdAt']),
     );
@@ -45,6 +54,9 @@ class Event {
       'place': place,
       'category': category,
       'startsAt': startsAt?.toIso8601String(),
+      'priceTier': priceTier,
+      'distanceKm': distanceKm,
+      'friendsGoing': friendsGoing,
       'createdBy': createdBy,
       'createdAt': createdAt?.toIso8601String(),
     };
@@ -54,6 +66,20 @@ class Event {
     if (value is DateTime) return value;
     if (value is Timestamp) return value.toDate();
     if (value is String) return DateTime.tryParse(value);
+    return null;
+  }
+
+  static int? _parseInt(Object? value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+
+  static double? _parseDouble(Object? value) {
+    if (value is double) return value;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value);
     return null;
   }
 }

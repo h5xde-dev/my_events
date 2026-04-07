@@ -33,19 +33,14 @@ class _NavigationMenuState extends State<NavigationMenu> {
     ];
 
     return Scaffold(
-      body: Center(
-        child: pages.elementAt(_selectedIndex),
-      ),
+      body: pages.elementAt(_selectedIndex),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          color: Theme.of(context).colorScheme.surfaceContainerLowest,
           boxShadow: [
             BoxShadow(
-              blurRadius: 20,
-              color: Theme.of(context)
-                  .colorScheme
-                  .primary
-                  .withValues(alpha: .1),
+              blurRadius: 18,
+              color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.08),
             ),
           ],
         ),
@@ -63,10 +58,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
               NavigationDestination(icon: Icon(Icons.favorite), label: 'Избранное'),
               NavigationDestination(icon: Icon(Icons.search), label: 'Поиск'),
               NavigationDestination(icon: Icon(Icons.map), label: 'Карта'),
-              NavigationDestination(
-                icon: Icon(Icons.account_circle),
-                label: 'Профиль',
-              ),
+              NavigationDestination(icon: Icon(Icons.account_circle), label: 'Профиль'),
               NavigationDestination(icon: Icon(Icons.settings), label: 'Настройки'),
             ],
           ),

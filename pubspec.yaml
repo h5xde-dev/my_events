@@ -28,6 +28,7 @@ dependencies:
   location: ^6.0.2
   google_maps_flutter: ^2.12.1
   shared_preferences: ^2.5.3
+  firebase_remote_config: ^5.5.0
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_events/app/event_details_page.dart';
-import 'package:my_events/common_widgets/animated_background.dart';
+import 'package:my_events/app/shared/widgets/widgets.dart';
 import 'package:my_events/models/event.dart';
 import 'package:my_events/services/analytics_service.dart';
 import 'package:my_events/state/events_scope.dart';

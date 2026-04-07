@@ -10,20 +10,9 @@ class AnimatedBackground extends StatelessWidget {
     return Stack(
       children: <Widget>[
         const Positioned.fill(child: AnimatedGradient()),
-        onBottom(const AnimatedWave(
-          height: 100,
-          speed: 0.3,
-        )),
-        onBottom(const AnimatedWave(
-          height: 120,
-          speed: 0.4,
-          offset: pi,
-        )),
-        onBottom(const AnimatedWave(
-          height: 140,
-          speed: 0.4,
-          offset: pi / 2,
-        )),
+        onBottom(const AnimatedWave(height: 100, speed: 0.3)),
+        onBottom(const AnimatedWave(height: 120, speed: 0.4, offset: pi)),
+        onBottom(const AnimatedWave(height: 140, speed: 0.4, offset: pi / 2)),
         Positioned.fill(child: child),
       ],
     );
@@ -53,8 +42,7 @@ class AnimatedWave extends StatefulWidget {
   State<AnimatedWave> createState() => _AnimatedWaveState();
 }
 
-class _AnimatedWaveState extends State<AnimatedWave>
-    with SingleTickerProviderStateMixin {
+class _AnimatedWaveState extends State<AnimatedWave> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
@@ -100,7 +88,9 @@ class CurvePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final color = Paint()..color = Theme.of(context).primaryColor.withAlpha(60);
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = scheme.brightness == Brightness.dark;
+    final color = Paint()..color = scheme.primary.withValues(alpha: isDark ? 0.16 : 0.24);
     final path = Path();
 
     final y1 = sin(value);
@@ -112,8 +102,7 @@ class CurvePainter extends CustomPainter {
     final endPointY = size.height * (0.5 + 0.4 * y3);
 
     path.moveTo(size.width * 0, startPointY);
-    path.quadraticBezierTo(
-        size.width * 0.5, controlPointY, size.width, endPointY);
+    path.quadraticBezierTo(size.width * 0.5, controlPointY, size.width, endPointY);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.close();
@@ -121,9 +110,7 @@ class CurvePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
 class AnimatedGradient extends StatelessWidget {
@@ -137,19 +124,19 @@ class AnimatedGradient extends StatelessWidget {
       curve: Curves.easeInOut,
       onEnd: () {},
       builder: (context, value, _) {
-        final surface = Theme.of(context).colorScheme.surface;
-        final primary = Theme.of(context).colorScheme.primary;
+        final scheme = Theme.of(context).colorScheme;
+        final isDark = scheme.brightness == Brightness.dark;
+        final surface = scheme.surface;
+        final primary = scheme.primary.withValues(alpha: isDark ? 0.25 : 0.38);
         final color1 = Color.lerp(surface, primary, value) ?? surface;
         return Container(
           decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.center,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    surface,
-                    surface,
-                    color1,
-                  ])),
+            gradient: LinearGradient(
+              begin: Alignment.center,
+              end: Alignment.bottomCenter,
+              colors: [surface, surface, color1],
+            ),
+          ),
         );
       },
     );

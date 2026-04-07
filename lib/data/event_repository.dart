@@ -25,6 +25,9 @@ class EventRepository {
         imageAsset: 'images/image_02.jpg',
         place: 'Центральная площадь',
         category: 'Город',
+        priceTier: 1,
+        distanceKm: 2.3,
+        friendsGoing: 6,
       ),
       Event(
         id: 'fair',
@@ -33,6 +36,9 @@ class EventRepository {
         imageAsset: 'images/image_03.jpg',
         place: 'Старый парк',
         category: 'Маркет',
+        priceTier: 2,
+        distanceKm: 1.2,
+        friendsGoing: 3,
       ),
       Event(
         id: 'coffee-evening',
@@ -41,6 +47,9 @@ class EventRepository {
         imageAsset: 'images/image_04.jpg',
         place: 'Coffee Hall',
         category: 'Нетворкинг',
+        priceTier: 1,
+        distanceKm: 0.8,
+        friendsGoing: 4,
       ),
       Event(
         id: 'tobacco-tasting',
@@ -49,6 +58,9 @@ class EventRepository {
         imageAsset: 'images/image_01.png',
         place: 'Smoke Lounge',
         category: 'Лаунж',
+        priceTier: 3,
+        distanceKm: 3.4,
+        friendsGoing: 1,
       ),
     ];
   }
@@ -112,6 +124,9 @@ class EventRepository {
       'place': place.trim(),
       'category': category,
       'startsAt': startsAt?.toIso8601String(),
+      'priceTier': 1,
+      'distanceKm': 1.0,
+      'friendsGoing': 0,
       'imageAsset': 'images/image_01.png',
       'createdBy': createdBy,
       'createdAt': FieldValue.serverTimestamp(),
@@ -155,5 +170,10 @@ class EventRepository {
         .snapshots()
         .map((d) => d.data());
   }
-}
 
+  Future<Map<String, dynamic>?> getProfile(String userId) async {
+    final snapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return snapshot.data();
+  }
+}

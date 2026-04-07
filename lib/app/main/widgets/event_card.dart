@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:ui';
+import 'package:flutter/material.dart';
 import 'package:my_events/app/event_details_page.dart';
 import 'package:my_events/models/event.dart';
+import 'package:my_events/services/analytics_service.dart';
 import 'package:my_events/state/favorites_scope.dart';
 
 class EventCard extends StatelessWidget {
@@ -19,7 +20,7 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
+    final scheme = Theme.of(context).colorScheme;
     var cardAspectRatio = 12.0 / 16.0;
     var widgetAspectRatio = cardAspectRatio * 1.2;
 
@@ -44,11 +45,7 @@ class EventCard extends StatelessWidget {
           var delta = i - currentPage;
           bool isOnRight = delta > 0;
 
-          var start = padding +
-              max(
-                  primaryCardLeft -
-                      horizontalInset * -delta * (isOnRight ? 15 : 1),
-                  0.0);
+          var start = padding + max(primaryCardLeft - horizontalInset * -delta * (isOnRight ? 15 : 1), 0.0);
 
           var cardItem = Positioned.directional(
             top: padding + verticalInset * max(-delta, 0.0),
@@ -58,13 +55,16 @@ class EventCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
               child: Container(
-                decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                  const BoxShadow(
-                    color: Colors.black12,
-                    offset: Offset(3.0, 6.0),
-                    blurRadius: 10.0,
-                  )
-                ]),
+                decoration: BoxDecoration(
+                  color: scheme.surface,
+                  boxShadow: [
+                    BoxShadow(
+                      color: scheme.shadow.withValues(alpha: 0.15),
+                      offset: const Offset(3.0, 6.0),
+                      blurRadius: 10.0,
+                    )
+                  ],
+                ),
                 child: AspectRatio(
                   aspectRatio: cardAspectRatio,
                   child: Stack(
@@ -85,14 +85,12 @@ class EventCard extends StatelessWidget {
                               child: Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.25),
+                                  color: scheme.scrim.withValues(alpha: 0.28),
                                   borderRadius: BorderRadius.circular(99),
                                 ),
                                 child: Icon(
-                                  isFav
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  color: Colors.white,
+                                  isFav ? Icons.favorite : Icons.favorite_border,
+                                  color: scheme.onPrimaryContainer,
                                   size: 18,
                                 ),
                               ),
@@ -111,55 +109,33 @@ class EventCard extends StatelessWidget {
                               Row(
                                 children: <Widget>[
                                   Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 16.0,
-                                      top: 8.0,
-                                      bottom: 8.0,
-                                    ),
+                                    padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
                                     child: CircleAvatar(
-                                      backgroundColor:
-                                          Theme.of(context).colorScheme.primary,
+                                      backgroundColor: Theme.of(context).colorScheme.primary,
                                       radius: 20,
                                       child: CircleAvatar(
-                                        backgroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .surface,
+                                        backgroundColor: Theme.of(context).colorScheme.surface,
                                         radius: 18,
                                       ),
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 8.0,
-                                      right: 16.0,
-                                      top: 8.0,
-                                    ),
+                                    padding: const EdgeInsets.only(left: 8.0, right: 16.0, top: 8.0),
                                     child: Container(
                                       height: 20,
                                       decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ),
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .surface,
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
+                                        border: Border.all(color: Theme.of(context).colorScheme.primary),
+                                        color: Theme.of(context).colorScheme.surface,
+                                        borderRadius: BorderRadius.circular(5.0),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6.0,
-                                        ),
+                                        padding: const EdgeInsets.symmetric(horizontal: 6.0),
                                         child: Text(
                                           events[i].description,
                                           style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface,
+                                            color: Theme.of(context).colorScheme.onSurface,
                                             fontSize: 15.0,
-                                            fontFamily: "SF-Pro-Text-Regular",
+                                            fontFamily: 'SF-Pro-Text-Regular',
                                           ),
                                         ),
                                       ),
@@ -168,16 +144,13 @@ class EventCard extends StatelessWidget {
                                 ],
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 8.0,
-                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                 child: Text(
                                   events[i].description,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 15.0,
-                                    fontFamily: "SF-Pro-Text-Regular",
+                                    fontFamily: 'SF-Pro-Text-Regular',
                                   ),
                                 ),
                               ),
@@ -192,15 +165,9 @@ class EventCard extends StatelessWidget {
                         right: 0,
                         child: ClipRect(
                           child: BackdropFilter(
-                            filter: ImageFilter.blur(
-                              sigmaX: 10.0,
-                              sigmaY: 10.0,
-                            ),
+                            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                             child: Container(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withValues(alpha: 0.4),
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.35),
                               alignment: Alignment.center,
                               width: 100.0,
                               height: 150.0,
@@ -215,10 +182,7 @@ class EventCard extends StatelessWidget {
                           child: InkWell(
                             onTap: () {
                               Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      EventDetailsPage(event: events[i]),
-                                ),
+                                MaterialPageRoute(builder: (_) => EventDetailsPage(event: events[i])),
                               );
                             },
                           ),
@@ -232,9 +196,7 @@ class EventCard extends StatelessWidget {
           );
           cardList.add(cardItem);
         }
-        return Stack(
-          children: cardList,
-        );
+        return Stack(children: cardList);
       }),
     );
   }
@@ -247,38 +209,58 @@ class EventCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: 16.0, vertical: 8.0),
-            child: Text(events[i].title,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25.0,
-                    fontFamily: "SF-Pro-Text-Regular")),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Text(
+              events[i].title,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                fontSize: 25.0,
+                fontFamily: 'SF-Pro-Text-Regular',
+              ),
+            ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: 16.0, vertical: 8.0),
-            child: Text(events[i].description,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15.0,
-                    fontFamily: "SF-Pro-Text-Regular")),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Text(
+              events[i].description,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                fontSize: 15.0,
+                fontFamily: 'SF-Pro-Text-Regular',
+              ),
+            ),
           ),
-          SizedBox(
-            height: 10.0,
-          ),                 
+          const SizedBox(height: 10.0),
           Padding(
-            padding: const EdgeInsets.only(
-                left: 12.0, bottom: 12.0),
+            padding: const EdgeInsets.only(left: 12.0, bottom: 12.0),
             child: Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: 22.0, vertical: 6.0),
+              padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 6.0),
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.circular(20.0)),
-              child: Text("Возможно пойду",
-                style: TextStyle(color: Colors.white)
-              )
+                color: Theme.of(context).colorScheme.secondary,
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Text(
+                'Возможно пойду',
+                style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 12, right: 12, bottom: 6),
+            child: InkWell(
+              onTap: () => AnalyticsService.logFriendProofOpened(eventId: events[i].id),
+              borderRadius: BorderRadius.circular(18),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Text(
+                  _socialProof(events[i]),
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
             ),
           ),
         ],
@@ -286,13 +268,18 @@ class EventCard extends StatelessWidget {
     );
   }
 
+  String _socialProof(Event event) {
+    if (event.friendsGoing <= 0) return 'Будь первым из друзей';
+    if (event.friendsGoing == 1) return '1 друг уже идет';
+    return '${event.friendsGoing} друзей уже идут';
+  }
+
   Widget _eventImage(Event event) {
     if (event.imageAsset.startsWith('http')) {
       return Image.network(
         event.imageAsset,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) =>
-            Image.asset('images/image_01.png', fit: BoxFit.cover),
+        errorBuilder: (_, __, ___) => Image.asset('images/image_01.png', fit: BoxFit.cover),
       );
     }
     return Image.asset(event.imageAsset, fit: BoxFit.cover);

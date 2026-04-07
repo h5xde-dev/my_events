@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_events/app/navigation/widgets/widgets.dart';
 import 'package:my_events/app/sign_in/sign_in_page.dart';
 import 'package:my_events/services/auth.dart';
-import 'package:my_events/common_widgets/navigation_menu.dart';
 import 'package:my_events/state/favorites_scope.dart';
 
 class LandingPage extends StatefulWidget {

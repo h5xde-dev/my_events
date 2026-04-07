@@ -26,4 +26,44 @@ class AnalyticsService {
   static Future<void> logSearchUsed({required String query}) async {
     await _analytics.logSearch(searchTerm: query);
   }
+
+  static Future<void> logSlotViewed({
+    required String slotType,
+    required int items,
+  }) async {
+    await _analytics.logEvent(
+      name: 'slot_viewed',
+      parameters: {'slot_type': slotType, 'items': items},
+    );
+  }
+
+  static Future<void> logFriendProofOpened({required String eventId}) async {
+    await _analytics.logEvent(
+      name: 'friend_proof_opened',
+      parameters: {'event_id': eventId},
+    );
+  }
+
+  static Future<void> logPostEventCompleted({
+    required String eventId,
+    required int nextOptions,
+  }) async {
+    await _analytics.logEvent(
+      name: 'post_event_completed',
+      parameters: {'event_id': eventId, 'next_options': nextOptions},
+    );
+  }
+
+  static Future<void> logNextEventTapped({
+    required String sourceEventId,
+    required String targetEventId,
+  }) async {
+    await _analytics.logEvent(
+      name: 'next_event_tapped',
+      parameters: {
+        'source_event_id': sourceEventId,
+        'target_event_id': targetEventId,
+      },
+    );
+  }
 }

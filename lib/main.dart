@@ -4,6 +4,7 @@ import 'package:my_events/app/landing_page.dart';
 import 'package:my_events/services/auth.dart';
 import 'package:my_events/services/analytics_service.dart';
 import 'package:my_events/services/customisation.dart';
+import 'package:my_events/services/feature_flags_service.dart';
 import 'package:my_events/services/notifications_service.dart';
 import 'package:my_events/state/events_controller.dart';
 import 'package:my_events/state/events_scope.dart';
@@ -16,6 +17,7 @@ Future<void> main() async {
   await Customisation.init();
   await NotificationsService.init();
   await NotificationsService.registerPushToken();
+  await FeatureFlagsService.init();
   await AnalyticsService.logAppOpen();
   runApp(const MyApp());
 }
@@ -50,13 +52,18 @@ class _MyAppState extends State<MyApp> {
       controller: _eventsController,
       child: FavoritesScope(
         controller: _favoritesController,
-        child: ValueListenableBuilder<ThemeData>(
-          valueListenable: Customisation.themeNotifier,
-          builder: (context, theme, _) {
+        child: AnimatedBuilder(
+          animation: Listenable.merge([
+            Customisation.themeNameNotifier,
+            Customisation.themeModeNotifier,
+          ]),
+          builder: (context, _) {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'MyEvents',
-              theme: theme,
+              theme: Customisation.lightTheme,
+              darkTheme: Customisation.darkTheme,
+              themeMode: Customisation.themeModeNotifier.value,
               home: LandingPage(auth: Auth()),
             );
           },

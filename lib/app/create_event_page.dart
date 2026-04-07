@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_events/common_widgets/animated_background.dart';
+import 'package:my_events/app/shared/widgets/widgets.dart';
 import 'package:my_events/data/event_repository.dart';
 import 'package:my_events/services/analytics_service.dart';
 import 'package:my_events/services/auth.dart';

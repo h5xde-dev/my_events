@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_events/common_widgets/animated_background.dart';
+import 'package:my_events/app/shared/widgets/widgets.dart';
 import 'package:my_events/data/event_repository.dart';
 import 'package:my_events/services/auth.dart';
 
@@ -83,7 +83,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               bio: _bioController.text,
                             );
                             if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Профиль обновлен'),
+                              ),
+                            );
                             Navigator.of(context).pop();
+                          } catch (e) {
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Не удалось сохранить профиль. $e'),
+                              ),
+                            );
                           } finally {
                             if (mounted) setState(() => _isSaving = false);
                           }

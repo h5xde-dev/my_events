@@ -1,10 +1,11 @@
 import 'package:my_events/app/create_event_page.dart';
 import 'package:my_events/app/events_page.dart';
+import 'package:my_events/app/favorites_page.dart';
 import 'package:my_events/app/profile_page.dart';
 import 'package:my_events/app/search_page.dart';
 import 'package:flutter/material.dart';
-import 'package:my_events/common_widgets/event_card.dart';
-import 'package:my_events/common_widgets/animated_background.dart';
+import 'package:my_events/app/main/widgets/widgets.dart';
+import 'package:my_events/app/shared/widgets/widgets.dart';
 import 'package:my_events/models/event.dart';
 import 'package:my_events/state/events_scope.dart';
 
@@ -67,24 +68,16 @@ class _MainPageState extends State<MainPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.account_circle,
-                        color: Theme.of(context).colorScheme.onSurface,
-                        size: 30.0,
-                      ),
+                    AppIconActionButton(
+                      icon: Icons.account_circle,
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => const ProfilePage(),
                         ),
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.search,
-                        color: Theme.of(context).colorScheme.onSurface,
-                        size: 30.0,
-                      ),
+                    AppIconActionButton(
+                      icon: Icons.search,
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => const SearchPage(),
@@ -96,37 +89,13 @@ class _MainPageState extends State<MainPage> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("Популярные",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontSize: 46.0,
-                          fontFamily: "Calibre-Semibold",
-                          letterSpacing: 1.0,
-                        )),
-                  ],
-                ),
+                child: const AppSectionTitle(title: 'Популярные'),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0),
                 child: Row(
                   children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 22.0, vertical: 6.0),
-                          child: Text("Рекомендуем",
-                              style: TextStyle(color: Colors.white)),
-                        ),
-                      ),
-                    ),
+                    const AppLabelChip(label: 'Рекомендуем'),
                     SizedBox(
                       width: 15.0,
                     ),
@@ -181,55 +150,45 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ),
                   ] else
-                    const SizedBox(
+                    SizedBox(
                       height: 320,
                       child: Center(
-                        child: CircularProgressIndicator(),
+                        child: eventsController.error == null
+                            ? const CircularProgressIndicator()
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 24),
+                                child: Text(
+                                  'Не удалось загрузить ленту. Проверьте интернет и попробуйте снова.',
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                       ),
                     ),
                 ],
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("Избранные",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontSize: 46.0,
-                          fontFamily: "Calibre-Semibold",
-                          letterSpacing: 1.0,
-                        )),
-                    IconButton(
-                      icon: Icon(
-                        Icons.favorite,
-                        size: 30.0,
-                        color: Theme.of(context).colorScheme.onSurface,
+                child: AppSectionTitle(
+                  title: 'Избранные',
+                  action: AppIconActionButton(
+                    icon: Icons.favorite,
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const FavoritesPage(),
                       ),
-                      onPressed: () {},
-                    )
-                  ],
+                    ),
+                  ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0),
                 child: Row(
                   children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 22.0, vertical: 6.0),
-                          child: Text("Предстоящие",
-                              style: TextStyle(color: Colors.white)),
-                        ),
-                      ),
-                    ),
+                    const AppLabelChip(label: 'Предстоящие'),
                     SizedBox(
                       width: 15.0,
                     ),

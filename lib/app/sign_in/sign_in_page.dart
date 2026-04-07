@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_events/app/sign_in/social_sign_in_button.dart';
 import 'package:my_events/app/sign_in/sign_in_button.dart';
+import 'package:my_events/app/shared/widgets/widgets.dart';
 import 'package:my_events/services/auth.dart';
-import 'package:my_events/common_widgets/animated_background.dart';
 
 class SignInPage extends StatelessWidget {
   SignInPage({
