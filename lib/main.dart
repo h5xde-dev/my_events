@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:my_events/app/landing_page.dart';
+import 'package:my_events/firebase_options.dart';
 import 'package:my_events/services/auth.dart';
 import 'package:my_events/services/analytics_service.dart';
 import 'package:my_events/services/customisation.dart';
@@ -13,13 +14,23 @@ import 'package:my_events/state/favorites_scope.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await Customisation.init();
-  await NotificationsService.init();
-  await NotificationsService.registerPushToken();
-  await FeatureFlagsService.init();
-  await AnalyticsService.logAppOpen();
   runApp(const MyApp());
+  _initPostLaunchServices();
+}
+
+Future<void> _initPostLaunchServices() async {
+  try {
+    await NotificationsService.init();
+    await NotificationsService.registerPushToken();
+    await FeatureFlagsService.init();
+    await AnalyticsService.logAppOpen();
+  } catch (e) {
+    debugPrint('Post-launch init failed: $e');
+  }
 }
 
 class MyApp extends StatefulWidget {

@@ -14,6 +14,15 @@ class SignInPage extends StatelessWidget {
   final ValueChanged<User> onSignIn;
   final AuthBase auth;
 
+  Future<void> _signInWithGoogle() async {
+    try {
+      final user = await auth.signInWithGoogle();
+      onSignIn(user);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   Future<void> _signInAnonymously() async {
     try {
       final user = await auth.signInAnonymously();
@@ -55,7 +64,7 @@ class SignInPage extends StatelessWidget {
               text: 'Войти через гугл',
               textColor: Colors.black,
               color: Colors.white,
-              onPressed: _signInAnonymously,
+              onPressed: _signInWithGoogle,
             ),
 
             const SizedBox(height: 8.0),

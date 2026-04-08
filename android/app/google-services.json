@@ -1,35 +1,41 @@
 {
   "project_info": {
-    "project_number": "1067165943048",
-    "firebase_url": "https://myevents-4fb18.firebaseio.com",
-    "project_id": "myevents-4fb18",
-    "storage_bucket": "myevents-4fb18.appspot.com"
+    "project_number": "495621406401",
+    "project_id": "eventus-ed00f",
+    "storage_bucket": "eventus-ed00f.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1067165943048:android:a81056ffaef2ce341018bd",
+        "mobilesdk_app_id": "1:495621406401:android:0aade9ed69f175d7ce9e40",
         "android_client_info": {
           "package_name": "com.templarapps.myevents"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1067165943048-7e4pk37i0j7qhmbq8ohjitk0pq6e2ts9.apps.googleusercontent.com",
+          "client_id": "495621406401-klqs0p6kjogfoi5ss6d0euoos5mcft8v.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBDBq97tTtXeE8w14XlJqhZ9ZyRwE10D2E"
+          "current_key": "AIzaSyBTaee9iv_EaBeHTSZgwH0LUm413bFxQeU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1067165943048-7e4pk37i0j7qhmbq8ohjitk0pq6e2ts9.apps.googleusercontent.com",
+              "client_id": "495621406401-klqs0p6kjogfoi5ss6d0euoos5mcft8v.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "495621406401-0ug8onhlrrh629bai17tpj73h691blm6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.myEvents"
+              }
             }
           ]
         }

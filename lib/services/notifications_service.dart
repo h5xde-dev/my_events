@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationsService {
@@ -29,7 +31,17 @@ class NotificationsService {
   }
 
   static Future<String?> registerPushToken() async {
-    return FirebaseMessaging.instance.getToken();
+    try {
+      return await FirebaseMessaging.instance.getToken();
+    } on FirebaseException catch (e) {
+      // Some Android emulators/devices without Google Play Services
+      // cannot provide an FCM token.
+      debugPrint('FCM token unavailable: ${e.code} ${e.message}');
+      return null;
+    } catch (e) {
+      debugPrint('Unexpected FCM token error: $e');
+      return null;
+    }
   }
 
   static Future<void> scheduleLocalReminder({
