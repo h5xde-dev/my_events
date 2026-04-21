@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter_floating_bottom_bar/flutter_floating_bottom_bar.dart';
-import 'package:my_events/app/events_page.dart';
-import 'package:my_events/app/favorites_page.dart';
-import 'package:my_events/app/main_page.dart';
 import 'package:my_events/app/map_page.dart';
-import 'package:my_events/app/settings_page.dart';
+import 'package:my_events/app/shared/widgets/widgets.dart';
 import 'package:my_events/services/auth.dart';
 
 class NavigationMenu extends StatefulWidget {
@@ -17,10 +13,8 @@ class NavigationMenu extends StatefulWidget {
   State<NavigationMenu> createState() => _NavigationMenuState();
 }
 
-class _NavigationMenuState extends State<NavigationMenu>
-    with SingleTickerProviderStateMixin {
+class _NavigationMenuState extends State<NavigationMenu> {
   int _selectedIndex = 0;
-  late final TabController _tabController;
   static const int _centerTabIndex = 2;
 
   List<Color> get _accentColors => <Color>[
@@ -30,23 +24,24 @@ class _NavigationMenuState extends State<NavigationMenu>
         Colors.deepOrangeAccent
       ];
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 4, vsync: this);
-    _tabController.animation?.addListener(() {
-      final index = _tabController.animation?.value.round() ?? 0;
-      if (index != _selectedIndex && mounted) {
-        setState(() => _selectedIndex = index);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+  List<Widget> _pages() => [
+        MapPage(auth: widget.auth),
+        const AppStubPage(
+          title: 'Поиск',
+          description: 'Здесь будет поиск по событиям и фильтры.',
+          icon: Icons.search,
+        ),
+        const AppStubPage(
+          title: 'Избранное',
+          description: 'Здесь появятся сохраненные вами события.',
+          icon: Icons.favorite,
+        ),
+        const AppStubPage(
+          title: 'Настройки',
+          description: 'Раздел настроек скоро будет доступен.',
+          icon: Icons.settings,
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -82,47 +77,32 @@ class _NavigationMenuState extends State<NavigationMenu>
           alignment: Alignment.center,
           clipBehavior: Clip.none,
           children: [
-            TabBar(
-              controller: _tabController,
-              indicatorPadding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-              indicator: UnderlineTabIndicator(
-                borderSide: BorderSide(
-                  color: activeColor,
-                  width: 4,
-                ),
-                insets: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              ),
-              tabs: [
-                _tabIcon(Icons.home, 0, 'Главная', unselectedColor, colors[0]),
-                _tabIcon(Icons.map, 1, 'Карта', unselectedColor, colors[1]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _tabIcon(Icons.map, 0, 'Карта', unselectedColor, colors[0]),
+                _tabIcon(Icons.search, 1, 'Поиск', unselectedColor, colors[1]),
                 _tabIcon(
-                    Icons.favorite, 3, 'Избранное', unselectedColor, colors[2]),
+                    Icons.favorite, 2, 'Избранное', unselectedColor, colors[2]),
                 _tabIcon(
-                    Icons.settings, 4, 'Настройки', unselectedColor, colors[3]),
+                    Icons.settings, 3, 'Настройки', unselectedColor, colors[3]),
               ],
             ),
             Positioned(
               top: -25,
               child: FloatingActionButton(
                 heroTag: 'nav_fab',
-                onPressed: () {},
+                onPressed: () => setState(() => _selectedIndex = 0),
                 backgroundColor: colors[_centerTabIndex],
                 foregroundColor: Colors.white,
-                child: const Icon(Icons.add),
+                child: const Icon(Icons.map),
               ),
             ),
           ],
         ),
-        body: (context, controller) => TabBarView(
-          controller: _tabController,
-          dragStartBehavior: DragStartBehavior.down,
-          physics: const BouncingScrollPhysics(),
-          children: [
-            const MainPage(),
-            MapPage(auth: widget.auth),
-            const FavoritesPage(),
-            SettingsPage(auth: widget.auth)
-          ],
+        body: (context, controller) => IndexedStack(
+          index: _selectedIndex,
+          children: _pages(),
         ),
       ),
     );
@@ -136,14 +116,17 @@ class _NavigationMenuState extends State<NavigationMenu>
     Color selectedColor,
   ) {
     final isSelected = _selectedIndex == index;
-    return SizedBox(
-      height: 55,
-      width: 40,
-      child: Center(
-        child: Icon(
-          icon,
-          semanticLabel: semantics,
-          color: isSelected ? selectedColor : unselectedColor,
+    return GestureDetector(
+      onTap: () => setState(() => _selectedIndex = index),
+      child: SizedBox(
+        height: 55,
+        width: 40,
+        child: Center(
+          child: Icon(
+            icon,
+            semanticLabel: semantics,
+            color: isSelected ? selectedColor : unselectedColor,
+          ),
         ),
       ),
     );

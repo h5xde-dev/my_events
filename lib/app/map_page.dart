@@ -44,21 +44,7 @@ class _MapPageState extends State<MapPage> {
           heroTag: 'locate',
           onPressed: _centerOnUserLocation,
           child: const Icon(Icons.location_searching),
-        ),
-        const SizedBox(height: 8),
-        FloatingActionButton.small(
-          heroTag: 'add_location',
-          onPressed: _selectedPoint == null
-              ? null
-              : () => _openCreateEventSheet(_selectedPoint!),
-          child: const Icon(Icons.add_location),
-        ),
-        const SizedBox(height: 8),
-        FloatingActionButton(
-          heroTag: 'map_type',
-          onPressed: _toggleMapType,
-          child: const Icon(Icons.map),
-        ),
+        )
       ],
     );
   }
@@ -131,7 +117,7 @@ class _MapPageState extends State<MapPage> {
         point: point,
         icon: PlacemarkIcon.single(
           PlacemarkIconStyle(
-            scale: 1.25,
+            scale: 0.10,
             image: BitmapDescriptor.fromAssetImage('images/logo.png'),
           ),
         ),
@@ -188,6 +174,7 @@ class _MapPageState extends State<MapPage> {
             onMapTap: _onMapTap,
             mapObjects: _buildEventMapObjects(events),
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
           floatingActionButton: _placeMarkButton(),
         );
       },
