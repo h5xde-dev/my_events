@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_events/app/search_page.dart';
 import 'package:my_events/app/shared/widgets/widgets.dart';
 import 'package:my_events/data/event_repository.dart';
 import 'package:my_events/models/event.dart';
@@ -18,18 +19,28 @@ class _EditEventPageState extends State<EditEventPage> {
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _placeController;
+  late final TextEditingController _imageController;
   late String _category;
   DateTime? _startsAt;
   bool _isSaving = false;
 
-  static const _categories = ['Общее', 'Город', 'Маркет', 'Нетворкинг', 'Лаунж'];
+  static const _categories = [
+    'Общее',
+    'Город',
+    'Маркет',
+    'Нетворкинг',
+    'Лаунж'
+  ];
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.event.title);
-    _descriptionController = TextEditingController(text: widget.event.description);
+    _descriptionController =
+        TextEditingController(text: widget.event.description);
     _placeController = TextEditingController(text: widget.event.place);
+    _imageController = TextEditingController(
+        text: widget.event.imageUrl ?? widget.event.imageAsset);
     _category = widget.event.category;
     _startsAt = widget.event.startsAt;
   }
@@ -39,105 +50,121 @@ class _EditEventPageState extends State<EditEventPage> {
     _titleController.dispose();
     _descriptionController.dispose();
     _placeController.dispose();
+    _imageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBackground(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(title: const Text('Редактировать событие')),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              children: [
-                _field('Название', _titleController),
-                const SizedBox(height: 12),
-                _field('Описание', _descriptionController, maxLines: 3),
-                const SizedBox(height: 12),
-                _field('Место', _placeController),
-                const SizedBox(height: 12),
-                DropdownButtonFormField<String>(
-                  initialValue: _category,
-                  items: _categories
-                      .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                      .toList(),
-                  onChanged: (v) => setState(() => _category = v ?? 'Общее'),
-                  decoration: const InputDecoration(
-                    labelText: 'Категория',
-                    filled: true,
-                    fillColor: Colors.white,
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              AppScreenHeader(
+                title: 'Редактировать событие',
+                trailing: AppIconActionButton(
+                  icon: Icons.search,
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const SearchPage()),
                   ),
                 ),
-                const SizedBox(height: 12),
-                FilledButton.tonal(
-                  onPressed: () async {
-                    final picked = await showDatePicker(
-                      context: context,
-                      firstDate: DateTime.now().subtract(const Duration(days: 1)),
-                      lastDate: DateTime.now().add(const Duration(days: 365)),
-                      initialDate: _startsAt ?? DateTime.now(),
-                    );
-                    if (picked != null) setState(() => _startsAt = picked);
-                  },
-                  child: Text(
-                    _startsAt == null
-                        ? 'Выбрать дату'
-                        : 'Дата: ${_startsAt!.day}.${_startsAt!.month}.${_startsAt!.year}',
-                  ),
+              ),
+              const SizedBox(height: 12),
+              _field('Название', _titleController),
+              const SizedBox(height: 12),
+              _field('Описание', _descriptionController, maxLines: 3),
+              const SizedBox(height: 12),
+              _field('Место', _placeController),
+              const SizedBox(height: 12),
+              _field('Картинка (URL или asset)', _imageController),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String>(
+                initialValue: _category,
+                items: _categories
+                    .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                    .toList(),
+                onChanged: (v) => setState(() => _category = v ?? 'Общее'),
+                decoration: const InputDecoration(
+                  labelText: 'Категория',
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
-                const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: _isSaving
-                      ? null
-                      : () async {
-                          if (_formKey.currentState?.validate() != true) return;
-                          setState(() => _isSaving = true);
-                          try {
-                            await _repo.updateEvent(
-                              id: widget.event.id,
-                              title: _titleController.text,
-                              description: _descriptionController.text,
-                              place: _placeController.text,
-                              category: _category,
-                              startsAt: _startsAt,
-                            );
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Событие обновлено'),
-                              ),
-                            );
-                            Navigator.of(context).pop();
-                          } catch (e) {
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Не удалось сохранить изменения. $e'),
-                              ),
-                            );
-                          } finally {
-                            if (mounted) setState(() => _isSaving = false);
-                          }
-                        },
-                  child: Text(_isSaving ? 'Сохраняем...' : 'Сохранить изменения'),
+              ),
+              const SizedBox(height: 12),
+              FilledButton.tonal(
+                onPressed: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    firstDate: DateTime.now().subtract(const Duration(days: 1)),
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                    initialDate: _startsAt ?? DateTime.now(),
+                  );
+                  if (picked != null) setState(() => _startsAt = picked);
+                },
+                child: Text(
+                  _startsAt == null
+                      ? 'Выбрать дату'
+                      : 'Дата: ${_startsAt!.day}.${_startsAt!.month}.${_startsAt!.year}',
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: _isSaving
+                    ? null
+                    : () async {
+                        if (_formKey.currentState?.validate() != true) return;
+                        setState(() => _isSaving = true);
+                        try {
+                          await _repo.updateEvent(
+                            id: widget.event.id,
+                            title: _titleController.text,
+                            description: _descriptionController.text,
+                            address: _placeController.text,
+                            latitude: widget.event.latitude ?? 55.751244,
+                            longitude: widget.event.longitude ?? 37.618423,
+                            category: _category,
+                            imageUrl: _imageController.text,
+                            startsAt: _startsAt,
+                          );
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Событие обновлено'),
+                            ),
+                          );
+                          Navigator.of(context).pop();
+                        } catch (e) {
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  Text('Не удалось сохранить изменения. $e'),
+                            ),
+                          );
+                        } finally {
+                          if (mounted) setState(() => _isSaving = false);
+                        }
+                      },
+                child: Text(_isSaving ? 'Сохраняем...' : 'Сохранить изменения'),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _field(String hint, TextEditingController controller, {int maxLines = 1}) {
+  Widget _field(String hint, TextEditingController controller,
+      {int maxLines = 1}) {
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
-      validator: (v) => (v == null || v.trim().isEmpty) ? 'Поле обязательно' : null,
+      validator: (v) =>
+          (v == null || v.trim().isEmpty) ? 'Поле обязательно' : null,
       decoration: InputDecoration(
         hintText: hint,
         filled: true,
@@ -150,4 +177,3 @@ class _EditEventPageState extends State<EditEventPage> {
     );
   }
 }
-

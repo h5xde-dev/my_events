@@ -21,12 +21,6 @@ class NotificationsService {
     );
     await _local.initialize(settings);
 
-    await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
     _isInitialized = true;
   }
 

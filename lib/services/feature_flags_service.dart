@@ -3,10 +3,12 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 class FeatureFlagsService {
   FeatureFlagsService._();
 
-  static final FirebaseRemoteConfig _remoteConfig = FirebaseRemoteConfig.instance;
+  static final FirebaseRemoteConfig _remoteConfig =
+      FirebaseRemoteConfig.instance;
   static bool _initialized = false;
 
-  static bool get smartWeekEnabled => _remoteConfig.getBool('ff_smart_week_enabled');
+  static bool get smartWeekEnabled =>
+      _remoteConfig.getBool('ff_smart_week_enabled');
   static bool get betweenClassesEnabled =>
       _remoteConfig.getBool('ff_between_classes_enabled');
   static bool get socialProofEnabled =>

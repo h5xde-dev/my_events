@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:flutter/foundation.dart';
 import 'package:my_events/models/event.dart';
 
 class EventPageResult {
@@ -24,6 +26,8 @@ class EventRepository {
         description: 'Праздник в центре города',
         imageAsset: 'images/image_02.jpg',
         place: 'Центральная площадь',
+        latitude: 55.751244,
+        longitude: 37.618423,
         category: 'Город',
         priceTier: 1,
         distanceKm: 2.3,
@@ -35,6 +39,8 @@ class EventRepository {
         description: 'Сезонные товары и еда',
         imageAsset: 'images/image_03.jpg',
         place: 'Старый парк',
+        latitude: 55.760186,
+        longitude: 37.618711,
         category: 'Маркет',
         priceTier: 2,
         distanceKm: 1.2,
@@ -46,6 +52,8 @@ class EventRepository {
         description: 'Нетворкинг и спикеры',
         imageAsset: 'images/image_04.jpg',
         place: 'Coffee Hall',
+        latitude: 55.74453,
+        longitude: 37.60512,
         category: 'Нетворкинг',
         priceTier: 1,
         distanceKm: 0.8,
@@ -57,6 +65,8 @@ class EventRepository {
         description: 'Лаунж и новые миксы',
         imageAsset: 'images/image_01.png',
         place: 'Smoke Lounge',
+        latitude: 55.763399,
+        longitude: 37.640287,
         category: 'Лаунж',
         priceTier: 3,
         distanceKm: 3.4,
@@ -113,20 +123,28 @@ class EventRepository {
   Future<void> createEvent({
     required String title,
     required String description,
-    required String place,
+    required String address,
+    required double latitude,
+    required double longitude,
     required String category,
+    required String imageUrl,
     DateTime? startsAt,
     required String createdBy,
   }) async {
+    final normalizedAddress = address.trim();
     await FirebaseFirestore.instance.collection('events').add({
       'title': title.trim(),
       'description': description.trim(),
-      'place': place.trim(),
+      'place': normalizedAddress,
+      'address': normalizedAddress,
+      'latitude': latitude,
+      'longitude': longitude,
       'category': category,
       'startsAt': startsAt?.toIso8601String(),
       'priceTier': 1,
       'distanceKm': 1.0,
       'friendsGoing': 0,
+      'imageUrl': imageUrl.trim(),
       'imageAsset': 'images/image_01.png',
       'createdBy': createdBy,
       'createdAt': FieldValue.serverTimestamp(),
@@ -137,16 +155,24 @@ class EventRepository {
     required String id,
     required String title,
     required String description,
-    required String place,
+    required String address,
+    required double latitude,
+    required double longitude,
     required String category,
+    required String imageUrl,
     DateTime? startsAt,
   }) async {
+    final normalizedAddress = address.trim();
     await FirebaseFirestore.instance.collection('events').doc(id).update({
       'title': title.trim(),
       'description': description.trim(),
-      'place': place.trim(),
+      'place': normalizedAddress,
+      'address': normalizedAddress,
+      'latitude': latitude,
+      'longitude': longitude,
       'category': category,
       'startsAt': startsAt?.toIso8601String(),
+      'imageUrl': imageUrl.trim(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
   }
@@ -156,6 +182,13 @@ class EventRepository {
     required String name,
     required String bio,
   }) async {
+    final authUid = firebase_auth.FirebaseAuth.instance.currentUser?.uid;
+    if (authUid != userId) {
+      debugPrint(
+        'saveProfile skipped: authUid=$authUid targetUserId=$userId',
+      );
+      return;
+    }
     await FirebaseFirestore.instance.collection('users').doc(userId).set({
       'name': name.trim(),
       'bio': bio.trim(),
@@ -164,14 +197,37 @@ class EventRepository {
   }
 
   Stream<Map<String, dynamic>?> watchProfile(String userId) {
+    final authUid = firebase_auth.FirebaseAuth.instance.currentUser?.uid;
+    if (authUid != userId) {
+      debugPrint(
+        'watchProfile blocked: authUid=$authUid targetUserId=$userId',
+      );
+      return Stream.value(null);
+    }
     return FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
         .snapshots()
-        .map((d) => d.data());
+        .map((d) => d.data())
+        .handleError((Object error, StackTrace stackTrace) {
+      if (error is FirebaseException) {
+        debugPrint(
+          'watchProfile error (${error.code}): authUid=$authUid targetUserId=$userId message=${error.message}',
+        );
+      } else {
+        debugPrint('watchProfile unknown error: $error');
+      }
+    });
   }
 
   Future<Map<String, dynamic>?> getProfile(String userId) async {
+    final authUid = firebase_auth.FirebaseAuth.instance.currentUser?.uid;
+    if (authUid != userId) {
+      debugPrint(
+        'getProfile blocked: authUid=$authUid targetUserId=$userId',
+      );
+      return null;
+    }
     final snapshot =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
     return snapshot.data();

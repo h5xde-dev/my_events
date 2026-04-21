@@ -52,5 +52,7 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Приложение использует геолокацию, чтобы показать ваше положение на карте.</string>
 </dict>
 </plist>

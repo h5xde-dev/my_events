@@ -9,10 +9,8 @@ class FavoritesScope extends InheritedNotifier<FavoritesController> {
   }) : super(notifier: controller, child: child);
 
   static FavoritesController of(BuildContext context) {
-    final scope =
-        context.dependOnInheritedWidgetOfExactType<FavoritesScope>();
+    final scope = context.dependOnInheritedWidgetOfExactType<FavoritesScope>();
     assert(scope != null, 'FavoritesScope not found in widget tree');
     return scope!.notifier!;
   }
 }
-

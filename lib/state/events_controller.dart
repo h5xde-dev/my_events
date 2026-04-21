@@ -44,22 +44,19 @@ class EventsController extends ChangeNotifier {
   }) {
     final now = DateTime.now();
     final weekAhead = now.add(const Duration(days: 7));
-    final withScore = _events
-        .where((event) {
-          final startsAt = event.startsAt;
-          return startsAt != null &&
-              startsAt.isAfter(now.subtract(const Duration(hours: 2))) &&
-              startsAt.isBefore(weekAhead);
-        })
-        .map((event) {
-          final score = _scoreEvent(event: event, now: now, budgetTier: budgetTier);
-          return EventSlotRecommendation(
-            event: event,
-            reason: _buildReason(event),
-            score: score,
-          );
-        })
-        .toList()
+    final withScore = _events.where((event) {
+      final startsAt = event.startsAt;
+      return startsAt != null &&
+          startsAt.isAfter(now.subtract(const Duration(hours: 2))) &&
+          startsAt.isBefore(weekAhead);
+    }).map((event) {
+      final score = _scoreEvent(event: event, now: now, budgetTier: budgetTier);
+      return EventSlotRecommendation(
+        event: event,
+        reason: _buildReason(event),
+        score: score,
+      );
+    }).toList()
       ..sort((a, b) => b.score.compareTo(a.score));
 
     if (withScore.isEmpty) {
@@ -69,7 +66,8 @@ class EventsController extends ChangeNotifier {
             (event) => EventSlotRecommendation(
               event: event,
               reason: _buildReason(event),
-              score: _scoreEvent(event: event, now: now, budgetTier: budgetTier),
+              score:
+                  _scoreEvent(event: event, now: now, budgetTier: budgetTier),
             ),
           )
           .toList();
@@ -83,26 +81,25 @@ class EventsController extends ChangeNotifier {
   }) {
     final now = DateTime.now();
     final inNinetyMinutes = now.add(const Duration(minutes: 90));
-    final candidates = _events
-        .where((event) {
-          final startsAt = event.startsAt;
-          if (startsAt == null) return false;
-          return startsAt.isAfter(now.subtract(const Duration(minutes: 15))) &&
-              startsAt.isBefore(inNinetyMinutes);
-        })
-        .map((event) {
-          final score = _scoreEvent(event: event, now: now, budgetTier: budgetTier) + 0.5;
-          return EventSlotRecommendation(
-            event: event,
-            reason: 'Подходит в окно между парами',
-            score: score,
-          );
-        })
-        .toList()
+    final candidates = _events.where((event) {
+      final startsAt = event.startsAt;
+      if (startsAt == null) return false;
+      return startsAt.isAfter(now.subtract(const Duration(minutes: 15))) &&
+          startsAt.isBefore(inNinetyMinutes);
+    }).map((event) {
+      final score =
+          _scoreEvent(event: event, now: now, budgetTier: budgetTier) + 0.5;
+      return EventSlotRecommendation(
+        event: event,
+        reason: 'Подходит в окно между парами',
+        score: score,
+      );
+    }).toList()
       ..sort((a, b) => b.score.compareTo(a.score));
 
     if (candidates.isEmpty) {
-      return smartWeekRecommendations(maxItems: maxItems, budgetTier: budgetTier);
+      return smartWeekRecommendations(
+          maxItems: maxItems, budgetTier: budgetTier);
     }
     return candidates.take(maxItems).toList();
   }
@@ -173,7 +170,8 @@ class EventsController extends ChangeNotifier {
     required int budgetTier,
   }) {
     final startsAt = event.startsAt;
-    final hoursToStart = startsAt == null ? 24.0 : startsAt.difference(now).inMinutes / 60;
+    final hoursToStart =
+        startsAt == null ? 24.0 : startsAt.difference(now).inMinutes / 60;
     final recencyScore = (24 - hoursToStart.clamp(0, 24)) / 24;
     final budgetScore = 1 - ((event.priceTier - budgetTier).abs() / 3);
     final distanceScore = 1 - (event.distanceKm.clamp(0, 8) / 8);
@@ -193,4 +191,3 @@ class EventsController extends ChangeNotifier {
     return '${event.distanceKm.toStringAsFixed(1)} км, $budget, ${event.friendsGoing} друзей уже идут';
   }
 }
-

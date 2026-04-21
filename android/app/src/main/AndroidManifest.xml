@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
-        android:name="${applicationName}"
+        android:name=".MainApplication"
         android:label="my_events"
         android:icon="@mipmap/launcher_icon">
         <activity
@@ -27,7 +27,8 @@
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />
-        <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyDhG-OL7O4AJJ2eZymLvRo2mE5EtbCYyCg"/>
+        <meta-data
+            android:name="com.yandex.maps.apikey"
+            android:value="bc2d3b41-bb2b-4c46-96fd-aceb431ea26c" />
     </application>
 </manifest>

@@ -10,7 +10,7 @@ class LandingPage extends StatefulWidget {
   final AuthBase auth;
 
   @override
-  _LandingPageState createState() => _LandingPageState();
+  State<LandingPage> createState() => _LandingPageState();
 }
 
 class _LandingPageState extends State<LandingPage> {
@@ -22,6 +22,9 @@ class _LandingPageState extends State<LandingPage> {
       stream: widget.auth.onAuthStateChanged,
       builder: (context, snapshot) {
         final user = snapshot.data;
+        debugPrint(
+          'Landing auth state: hasData=${snapshot.hasData} uid=${user?.uid}',
+        );
         if (_boundUid != user?.uid) {
           _boundUid = user?.uid;
           WidgetsBinding.instance.addPostFrameCallback((_) {

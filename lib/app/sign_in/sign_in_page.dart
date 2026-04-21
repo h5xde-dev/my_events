@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_events/app/sign_in/social_sign_in_button.dart';
 import 'package:my_events/app/sign_in/sign_in_button.dart';
-import 'package:my_events/app/shared/widgets/widgets.dart';
 import 'package:my_events/services/auth.dart';
 
 class SignInPage extends StatelessWidget {
@@ -10,7 +9,7 @@ class SignInPage extends StatelessWidget {
     required this.auth,
     required this.onSignIn,
   });
-  
+
   final ValueChanged<User> onSignIn;
   final AuthBase auth;
 
@@ -33,13 +32,10 @@ class SignInPage extends StatelessWidget {
   }
 
   @override
-
   Widget build(BuildContext context) {
-    return AnimatedBackground(
-      child: Scaffold(
-        body: __buildContent(),
-        backgroundColor: Colors.transparent,
-      ),
+    return Scaffold(
+      body: __buildContent(),
+      backgroundColor: Theme.of(context).colorScheme.surface,
     );
   }
 
@@ -66,14 +62,12 @@ class SignInPage extends StatelessWidget {
               color: Colors.white,
               onPressed: _signInWithGoogle,
             ),
-
             const SizedBox(height: 8.0),
             const Text(
               'or',
               style: TextStyle(fontSize: 14.0, color: Colors.black87),
               textAlign: TextAlign.center,
             ),
-
             const SizedBox(height: 8.0),
             SignInButton(
               text: 'Без регистрации',
@@ -81,9 +75,7 @@ class SignInPage extends StatelessWidget {
               color: Colors.green,
               onPressed: _signInAnonymously,
             ),
-            
           ],
-        )
-      );
+        ));
   }
 }

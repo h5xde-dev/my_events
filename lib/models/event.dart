@@ -5,7 +5,10 @@ class Event {
   final String title;
   final String description;
   final String imageAsset;
+  final String? imageUrl;
   final String place;
+  final double? latitude;
+  final double? longitude;
   final String category;
   final DateTime? startsAt;
   final int priceTier;
@@ -18,8 +21,11 @@ class Event {
     required this.id,
     required this.title,
     required this.description,
-    required this.imageAsset,
+    this.imageAsset = 'images/image_01.png',
+    this.imageUrl,
     this.place = '',
+    this.latitude,
+    this.longitude,
     this.category = 'Общее',
     this.startsAt,
     this.priceTier = 1,
@@ -30,12 +36,21 @@ class Event {
   });
 
   factory Event.fromMap(String id, Map<String, dynamic> data) {
+    final parsedLat = _parseDouble(data['latitude']);
+    final parsedLon = _parseDouble(data['longitude']);
+    final normalizedLat = _isValidLatitude(parsedLat) ? parsedLat : null;
+    final normalizedLon = _isValidLongitude(parsedLon) ? parsedLon : null;
+    final place =
+        (data['address'] as String?) ?? (data['place'] as String?) ?? '';
     return Event(
       id: id,
       title: (data['title'] as String?) ?? 'Без названия',
       description: (data['description'] as String?) ?? '',
       imageAsset: (data['imageAsset'] as String?) ?? 'images/image_01.png',
-      place: (data['place'] as String?) ?? '',
+      imageUrl: data['imageUrl'] as String?,
+      place: place,
+      latitude: normalizedLat,
+      longitude: normalizedLon,
       category: (data['category'] as String?) ?? 'Общее',
       startsAt: _parseDate(data['startsAt']),
       priceTier: _parseInt(data['priceTier']) ?? 1,
@@ -51,7 +66,11 @@ class Event {
       'title': title,
       'description': description,
       'imageAsset': imageAsset,
+      'imageUrl': imageUrl,
       'place': place,
+      'address': place,
+      'latitude': latitude,
+      'longitude': longitude,
       'category': category,
       'startsAt': startsAt?.toIso8601String(),
       'priceTier': priceTier,
@@ -82,5 +101,10 @@ class Event {
     if (value is String) return double.tryParse(value);
     return null;
   }
-}
 
+  static bool _isValidLatitude(double? value) =>
+      value != null && value >= -90 && value <= 90;
+
+  static bool _isValidLongitude(double? value) =>
+      value != null && value >= -180 && value <= 180;
+}

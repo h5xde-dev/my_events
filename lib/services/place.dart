@@ -11,18 +11,19 @@ class PlaceMark implements PlaceMarkBase {
   final databaseReference = FirebaseFirestore.instance;
   final Location geolocator = Location();
 
+  @override
   Future<void> createRecord() async {
     final user = firebase_auth.FirebaseAuth.instance.currentUser;
     if (user == null) return;
     await databaseReference.collection("places").add({
-        'user_id': user.uid,
-        'location': '0.23,0.24',
-        'status': 'created',
-        'visits': 0,
-        'rating': 0,
-        'from': 12,
-        'to': 13,
-      });
+      'user_id': user.uid,
+      'location': '0.23,0.24',
+      'status': 'created',
+      'visits': 0,
+      'rating': 0,
+      'from': 12,
+      'to': 13,
+    });
   }
 
   @override

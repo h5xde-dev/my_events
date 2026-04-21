@@ -7,6 +7,7 @@ import 'package:my_events/services/analytics_service.dart';
 import 'package:my_events/services/customisation.dart';
 import 'package:my_events/services/feature_flags_service.dart';
 import 'package:my_events/services/notifications_service.dart';
+import 'package:my_events/services/permissions_service.dart';
 import 'package:my_events/state/events_controller.dart';
 import 'package:my_events/state/events_scope.dart';
 import 'package:my_events/state/favorites_controller.dart';
@@ -24,6 +25,7 @@ Future<void> main() async {
 
 Future<void> _initPostLaunchServices() async {
   try {
+    await PermissionsService.requestRequiredOnLaunch();
     await NotificationsService.init();
     await NotificationsService.registerPushToken();
     await FeatureFlagsService.init();

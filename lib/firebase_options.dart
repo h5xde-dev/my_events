@@ -65,5 +65,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'eventus-ed00f.firebasestorage.app',
     iosBundleId: 'com.example.myEvents',
   );
-
 }

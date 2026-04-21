@@ -13,7 +13,8 @@ class Themes {
     final base = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      colorScheme: ColorScheme.fromSeed(seedColor: seed, brightness: Brightness.light),
+      colorScheme:
+          ColorScheme.fromSeed(seedColor: seed, brightness: Brightness.light),
     );
     return _withFoundation(base);
   }
@@ -23,7 +24,8 @@ class Themes {
     final base = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      colorScheme: ColorScheme.fromSeed(seedColor: seed, brightness: Brightness.dark),
+      colorScheme:
+          ColorScheme.fromSeed(seedColor: seed, brightness: Brightness.dark),
     );
     return _withFoundation(base);
   }
@@ -44,8 +46,10 @@ class Themes {
     return base.copyWith(
       scaffoldBackgroundColor: Colors.transparent,
       textTheme: base.textTheme.copyWith(
-        displaySmall: const TextStyle(fontWeight: FontWeight.w700, letterSpacing: 0.2),
-        headlineMedium: const TextStyle(fontWeight: FontWeight.w700, fontSize: 30),
+        displaySmall:
+            const TextStyle(fontWeight: FontWeight.w700, letterSpacing: 0.2),
+        headlineMedium:
+            const TextStyle(fontWeight: FontWeight.w700, fontSize: 30),
         titleLarge: const TextStyle(fontWeight: FontWeight.w700, fontSize: 22),
         bodyLarge: const TextStyle(fontSize: 16, height: 1.35),
         bodyMedium: const TextStyle(fontSize: 15, height: 1.4),
@@ -57,37 +61,46 @@ class Themes {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: scheme.surfaceContainerHighest.withValues(alpha: isDark ? 0.5 : 0.85),
+        backgroundColor: scheme.surfaceContainerHighest
+            .withValues(alpha: isDark ? 0.5 : 0.85),
         indicatorColor: scheme.primaryContainer,
         iconTheme: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
-          return IconThemeData(color: selected ? scheme.onPrimaryContainer : scheme.onSurfaceVariant);
+          return IconThemeData(
+              color: selected
+                  ? scheme.onPrimaryContainer
+                  : scheme.onSurfaceVariant);
         }),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return TextStyle(
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-            color: selected ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
+            color:
+                selected ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
           );
         }),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           side: BorderSide(color: scheme.outlineVariant),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: scheme.surfaceContainerHighest.withValues(alpha: isDark ? 0.45 : 0.9),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        fillColor: scheme.surfaceContainerHighest
+            .withValues(alpha: isDark ? 0.45 : 0.9),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,

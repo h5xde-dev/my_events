@@ -14,4 +14,3 @@ class EventsScope extends InheritedNotifier<EventsController> {
     return scope!.notifier!;
   }
 }
-

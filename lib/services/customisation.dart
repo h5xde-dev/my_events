@@ -14,13 +14,17 @@ class Customisation {
 
   static List<DropdownMenuItem<String>> themesList = Themes.themesList;
 
-  static ThemeData get lightTheme => Themes.lightFromName(themeNameNotifier.value);
-  static ThemeData get darkTheme => Themes.darkFromName(themeNameNotifier.value);
+  static ThemeData get lightTheme =>
+      Themes.lightFromName(themeNameNotifier.value);
+  static ThemeData get darkTheme =>
+      Themes.darkFromName(themeNameNotifier.value);
 
   static Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
-    themeNameNotifier.value = prefs.getString(_themePaletteKey) ?? Themes.defaultPalette;
-    themeModeNotifier.value = _themeModeFromName(prefs.getString(_themeModeKey) ?? _defaultMode);
+    themeNameNotifier.value =
+        prefs.getString(_themePaletteKey) ?? Themes.defaultPalette;
+    themeModeNotifier.value =
+        _themeModeFromName(prefs.getString(_themeModeKey) ?? _defaultMode);
   }
 
   static Future<void> changeTheme(String themeName) async {
